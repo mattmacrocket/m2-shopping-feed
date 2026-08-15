@@ -57,6 +57,11 @@ class Schedule
     protected $scopeConfig;
 
     /**
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
+     */
+    protected $localeDate;
+
+    /**
      * @var bool.
      * Is set to you when process is initiated through console and not magento's cron
      */
@@ -68,7 +73,8 @@ class Schedule
         \MageOS\ShoppingFeed\Model\FeedFactory $feedFactory,
         \MageOS\ShoppingFeed\Model\ResourceModel\Feed\Schedule\CollectionFactory $scheduleCollectionFactory,
         \MageOS\ShoppingFeed\Model\ResourceModel\Generator\Queue\CollectionFactory $queueCollectionFactory,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
     ) {
 
         $this->batchFactory = $batchFactory;
@@ -76,6 +82,7 @@ class Schedule
         $this->scheduleCollectionFactory = $scheduleCollectionFactory;
         $this->queueCollectionFactory = $queueCollectionFactory;
         $this->scopeConfig = $scopeConfig;
+        $this->localeDate = $localeDate;
     }
 
     /**
@@ -99,13 +106,10 @@ class Schedule
 
         $queueCollection = $this->queueCollectionFactory->create();
 
-        // Get Timezone directly from ObjectManager, as injection dependency fails with magento EE console installation
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $localeDate = $objectManager->create('\Magento\Framework\Stdlib\DateTime\TimezoneInterface');
         /**
  * @var \DateTime $dateObject
 */
-        $dateObject = $localeDate->date();
+        $dateObject = $this->localeDate->date();
 
         $yesterday = clone $dateObject;
         $yesterday->setTime(0, 0);
@@ -123,7 +127,6 @@ class Schedule
             if (!$queue->getId()) {
                 $feed = $this->feedFactory->create()
                     ->load($schedule->getFeedId());
-                $queue->setFeedId($schedule->getFeedId());
                 if ($schedule->getBatchMode()) {
                     $batch = $this->batchFactory->create();
                     $batch->setEnabled(true)
@@ -132,7 +135,7 @@ class Schedule
                     $queue->setBatch($batch);
                 }
                 // Add new queue for process
-                $queue->save();
+                $queue->add($feed, $schedule);
                 $feed->saveStatus(\MageOS\ShoppingFeed\Model\Feed\Source\Status::STATUS_PENDING);
                 $schedule->setProcessedAt($dateObject->format($dateTimeFormat));
                 $schedule->save();

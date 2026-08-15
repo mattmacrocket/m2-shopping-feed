@@ -24,8 +24,10 @@ use Magento\Ui\Component\MassAction\Filter;
 use MageOS\ShoppingFeed\Model\ResourceModel\Feed\CollectionFactory;
 use MageOS\ShoppingFeed\Model\Feed\Source\Status;
 
-class MassEnable extends \Magento\Backend\App\Action
+class MassEnable extends \Magento\Backend\App\Action implements \Magento\Framework\App\Action\HttpPostActionInterface
 {
+    public const ADMIN_RESOURCE = 'MageOS_ShoppingFeed::save';
+
     /**
      * Massactions filter
      *

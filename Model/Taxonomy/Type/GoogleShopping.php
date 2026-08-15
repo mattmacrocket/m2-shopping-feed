@@ -26,7 +26,9 @@ use \MageOS\ShoppingFeed\Model\Taxonomy\ProviderAbstract;
  */
 class GoogleShopping extends ProviderAbstract implements ProviderInterface
 {
-    const URL_FORMAT = 'http://www.google.com/basepages/producttype/taxonomy.%s.txt';
+    const URL_FORMAT = 'https://www.google.com/basepages/producttype/taxonomy.%s.txt';
+
+    const DEFAULT_LOCALE = 'en-US';
 
     protected $taxonomy;
 
@@ -69,6 +71,7 @@ class GoogleShopping extends ProviderAbstract implements ProviderInterface
             return $this->taxonomy;
         }
 
+        $cache = false;
         if ($this->getCacheKey() && $this->getCacheLifetime()) {
             $cache = $this->cache->load($this->getCacheKey());
         }
@@ -113,15 +116,19 @@ class GoogleShopping extends ProviderAbstract implements ProviderInterface
     public function getTaxonomyData()
     {
         $curl = $this->curlFactory->create();
-        $curl->setConfig(['timeout' => 15]);
-        $curl->write("GET", $this->getTaxonomyUrl(), '1.0');
+        $curl->setOptions(['timeout' => 15, 'header' => false]);
 
-        $response = $curl->read();
+        try {
+            $curl->write("GET", $this->getTaxonomyUrl(), '1.0');
+            $response = $curl->read();
+            $statusCode = (int) $curl->getInfo(CURLINFO_HTTP_CODE);
+        } finally {
+            $curl->close();
+        }
 
-        if ($response === false) {
+        if ($response === '' || $response === false || $statusCode < 200 || $statusCode >= 300) {
             return false;
         }
-        $curl->close();
 
         return $this->parseTaxonomy($response);
     }
@@ -133,7 +140,10 @@ class GoogleShopping extends ProviderAbstract implements ProviderInterface
      */
     public function getTaxonomyUrl()
     {
-        $locale = $this->feed->getConfig('categories_locale');
+        $locale = (string) $this->feed->getConfig('categories_locale');
+        if (!preg_match('/^[a-z]{2}-[A-Z]{2}$/D', $locale)) {
+            $locale = self::DEFAULT_LOCALE;
+        }
 
         return sprintf(
             self::URL_FORMAT,
@@ -149,15 +159,10 @@ class GoogleShopping extends ProviderAbstract implements ProviderInterface
      */
     protected function parseTaxonomy($response)
     {
-        $response = preg_split('/^\r?$/m', $response, 2);
-        $response = trim($response[1]);
+        $taxonomyData = preg_split('/\r\n|\r|\n/', trim($response));
 
-        $taxonomyData = explode("\n", $response);
-
-        if (strpos($taxonomyData[0], '#') !== false) {
-            unset($taxonomyData[0]);
-        }
-
-        return array_values(array_filter($taxonomyData));
+        return array_values(array_filter(array_map('trim', $taxonomyData), static function ($line) {
+            return $line !== '' && strpos($line, '#') !== 0;
+        }));
     }
 }

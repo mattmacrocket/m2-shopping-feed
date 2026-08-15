@@ -14,6 +14,7 @@
                               sortOrder="1000">
                         <resource id="MageOS_ShoppingFeed::grid" title="Shopping Feeds" sortOrder="5">
                             <resource id="MageOS_ShoppingFeed::save" title="Save Feed" sortOrder="10" />
+                            <resource id="MageOS_ShoppingFeed::generate" title="Generate Feed" sortOrder="15" />
                             <resource id="MageOS_ShoppingFeed::delete" title="Delete Feed" sortOrder="20" />
                         </resource>
                     </resource>

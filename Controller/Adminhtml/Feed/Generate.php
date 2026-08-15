@@ -20,9 +20,12 @@ namespace MageOS\ShoppingFeed\Controller\Adminhtml\Feed;
 
 use MageOS\ShoppingFeed\Model\ResourceModel\Generator\Queue\Collection as QueueCollection;
 use MageOS\ShoppingFeed\Model\Generator\QueueFactory;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 
-class Generate extends \Magento\Backend\App\Action
+class Generate extends \Magento\Backend\App\Action implements HttpPostActionInterface
 {
+    public const ADMIN_RESOURCE = 'MageOS_ShoppingFeed::generate';
+
     /**
      * @var \MageOS\ShoppingFeed\Controller\Adminhtml\Feed\Builder
      */
@@ -95,8 +98,7 @@ class Generate extends \Magento\Backend\App\Action
                 ->setLimit(intval($schedules[0]['batch_limit']))
                 ->setEnabled(boolval($schedules[0]['batch_mode']));
         }
-        $queue->setFeedId($feed->getId())
-            ->save();
+        $queue->add($feed);
 
         $feed->saveStatus(\MageOS\ShoppingFeed\Model\Feed\Source\Status::STATUS_PENDING);
         $this->messageManager->addSuccess(__('Feed added in processing queue.'));

@@ -20,6 +20,8 @@ namespace MageOS\ShoppingFeed\Controller\Adminhtml\Feed;
 
 class SuggestCategories extends \Magento\Backend\App\Action
 {
+    public const ADMIN_RESOURCE = 'MageOS_ShoppingFeed::save';
+
     /**
      * @var \Magento\Framework\Controller\Result\JsonFactory
      */

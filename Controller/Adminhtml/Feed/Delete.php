@@ -20,8 +20,10 @@ namespace MageOS\ShoppingFeed\Controller\Adminhtml\Feed;
 
 use Magento\Framework\Controller\ResultFactory;
 
-class Delete extends \Magento\Backend\App\Action
+class Delete extends \Magento\Backend\App\Action implements \Magento\Framework\App\Action\HttpPostActionInterface
 {
+    public const ADMIN_RESOURCE = 'MageOS_ShoppingFeed::delete';
+
     /**
      * @var \MageOS\ShoppingFeed\Controller\Adminhtml\Feed\Builder
      */

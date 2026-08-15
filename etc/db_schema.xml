@@ -44,9 +44,9 @@
   <table name="mageos_shopping_feed_feed_queue" resource="default" engine="innodb" comment="Feed queue table">
     <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="Queue Id"/>
     <column xsi:type="int" name="feed_id" padding="10" unsigned="true" nullable="false" comment="Feed Id"/>
-    <column xsi:type="int" name="schedule_id" padding="10" unsigned="true" nullable="false" comment="Schedule Id"/>
+    <column xsi:type="int" name="schedule_id" padding="10" unsigned="true" nullable="true" comment="Schedule Id"/>
     <column xsi:type="text" name="message" nullable="false"/>
-    <column xsi:type="int" name="is_read" padding="2" unsigned="true" nullable="false" comment="Batch Mode Status"/>
+    <column xsi:type="int" name="is_read" padding="2" unsigned="true" nullable="false" default="0" comment="Batch Mode Status"/>
     <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" comment="Processed at timestamp"/>
     <constraint xsi:type="primary" referenceId="PRIMARY">
       <column name="id"/>

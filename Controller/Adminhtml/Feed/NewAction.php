@@ -20,6 +20,8 @@ namespace MageOS\ShoppingFeed\Controller\Adminhtml\Feed;
 
 class NewAction extends \Magento\Backend\App\Action
 {
+    public const ADMIN_RESOURCE = 'MageOS_ShoppingFeed::save';
+
     /**
      * @var \Magento\Backend\Model\View\Result\Forward
      */

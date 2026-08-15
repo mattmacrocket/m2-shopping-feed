@@ -116,6 +116,11 @@ class Feed extends AbstractModel
     protected $serializer;
 
     /**
+     * @var \MageOS\ShoppingFeed\Model\Feed\OutputPath
+     */
+    protected $outputPath;
+
+    /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $storeManager;
@@ -161,6 +166,7 @@ class Feed extends AbstractModel
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \MageOS\ShoppingFeed\Model\Feed\OutputPath $outputPath,
         ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         $feedType = '',
@@ -180,6 +186,7 @@ class Feed extends AbstractModel
         $this->localeDate = $localeDate;
         $this->serializer = $serializer;
         $this->storeManager = $storeManager;
+        $this->outputPath = $outputPath;
 
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
 
@@ -255,13 +262,17 @@ class Feed extends AbstractModel
     public function beforeSave()
     {
         //TODO: if schedule is adjusted, set the processed_at date one day back so schedule can be picked up today.
-        if (is_array($this->getData('messages'))) {
-            $this->setData('messages', $this->serializer->serialize($this->getData('messages')));
+        $messages = $this->getData('messages');
+        if ($messages === null || $messages === false || $messages === '') {
+            $messages = [];
+        }
+        if (is_array($messages)) {
+            $this->setData('messages', $this->serializer->serialize($messages));
         }
 
         // Clean up new line characters breaking the JS widget for column maps
         $config = $this->getConfig();
-        $columns = $this->getConfig('columns_product_columns');
+        $columns = $this->getConfig('columns_product_columns', []);
         array_walk_recursive(
             $columns, function (&$value, $key) {
                 if (!is_array($value)) { $value = strtr($value, "\n\r\t", '   ');
@@ -510,6 +521,7 @@ class Feed extends AbstractModel
      */
     protected function validate()
     {
+        $this->outputPath->validateFeed($this);
         return $this;
     }
 

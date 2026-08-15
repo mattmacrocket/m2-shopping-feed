@@ -71,10 +71,29 @@ class FeedActions extends Column
             foreach ($dataSource['data']['items'] as & $item) {
                 $name = $this->getData('name');
                 if (isset($item['id'])) {
-                    $item[$name] = '<a href="' . $this->urlBuilder->getUrl(self::FEED_URL_PATH_GENERATE, ['id' => $item['id']]). '">'. __('Run Now'). '</a>'
-                        . ' / <a href="' . $this->urlBuilder->getUrl(self::FEED_URL_PATH_EDIT, ['id' => $item['id']]). '" title="'. __('Do not change feed configuration while feed is processing.') .'">'. __('Configure'). '</a>'
-                        . ' <br /><a popup="1" href="'. $this->urlBuilder->getUrl(self::FEED_URL_PATH_TEST, ['id' => $item['id']]). '" onclick="window.open(this.href,\'feed_test\',\'width=1010,height=700,resizable=1,scrollbars=1\');return false;">'. __('Test Feed'). '</a>'
-                        . ' / <a popup="1" href="'. $this->urlBuilder->getUrl(self::FEED_URL_PATH_VIEWLOG, ['id' => $item['id']]). '" onclick="window.open(this.href,\'feed_logs\',\'width=835,height=700,resizable=1,scrollbars=1\');return false;">'. __('View Log'). '</a>';
+                    $item[$name]['generate'] = [
+                        'href' => $this->urlBuilder->getUrl(self::FEED_URL_PATH_GENERATE, ['id' => $item['id']]),
+                        'label' => __('Run Now'),
+                        'confirm' => [
+                            'title' => __('Run Feed Now'),
+                            'message' => __('Add this feed to the generation queue now?'),
+                        ],
+                        'post' => true,
+                    ];
+                    $item[$name]['edit'] = [
+                        'href' => $this->urlBuilder->getUrl(self::FEED_URL_PATH_EDIT, ['id' => $item['id']]),
+                        'label' => __('Configure'),
+                    ];
+                    $item[$name]['test'] = [
+                        'href' => $this->urlBuilder->getUrl(self::FEED_URL_PATH_TEST, ['id' => $item['id']]),
+                        'label' => __('Test Feed'),
+                        'target' => '_blank',
+                    ];
+                    $item[$name]['viewlog'] = [
+                        'href' => $this->urlBuilder->getUrl(self::FEED_URL_PATH_VIEWLOG, ['id' => $item['id']]),
+                        'label' => __('View Log'),
+                        'target' => '_blank',
+                    ];
                 }
             }
         }

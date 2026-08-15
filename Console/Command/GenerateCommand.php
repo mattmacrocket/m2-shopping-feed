@@ -127,11 +127,15 @@ class GenerateCommand extends Command
         $process = $this->processFactory->create()->setDetached();
         if (!$feedId) {
             // Generate feed by queue.
-            $process->execute();
+            $ret = $process->execute()
+                ? \Magento\Framework\Console\Cli::RETURN_SUCCESS
+                : \Magento\Framework\Console\Cli::RETURN_FAILURE;
         } elseif (!$testSku) {
             // Generate feed by specified FeedID
             $process->setFeedId($feedId);
-            $process->execute();
+            $ret = $process->execute()
+                ? \Magento\Framework\Console\Cli::RETURN_SUCCESS
+                : \Magento\Framework\Console\Cli::RETURN_FAILURE;
         } else {
             // Generating feed by specified FeedID and TestSKU
             $output->writeln(sprintf('Starting generation for feed #%s with SKU #%s', $feedId, $testSku));
@@ -156,7 +160,7 @@ class GenerateCommand extends Command
                 $ret = \Magento\Framework\Console\Cli::RETURN_FAILURE;
             }
         }
-        $output->writeln('Done!');
+        $output->writeln($ret === \Magento\Framework\Console\Cli::RETURN_SUCCESS ? 'Done!' : 'Generation failed.');
         return $ret;
     }
 

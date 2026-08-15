@@ -4,14 +4,14 @@ declare(strict_types=1);
 $magentoRoot = getenv('MAGENTO_ROOT') ?: '';
 $magentoBootstrap = $magentoRoot . '/dev/tests/unit/framework/bootstrap.php';
 if ($magentoRoot === '' || !is_file($magentoBootstrap)) {
-    fwrite(STDERR, "Set MAGENTO_ROOT to a Magento or Mage-OS checkout before running the unit suite.\n");
-    exit(2);
+    throw new RuntimeException(
+        'Set MAGENTO_ROOT to a Magento or Mage-OS checkout before running the unit suite.'
+    );
 }
 
 $testTempDirectory = sys_get_temp_dir() . '/mageos-shopping-feed-unit-tests';
 if (!is_dir($testTempDirectory) && !mkdir($testTempDirectory, 0777, true) && !is_dir($testTempDirectory)) {
-    fwrite(STDERR, "Unable to create the unit-test temporary directory.\n");
-    exit(2);
+    throw new RuntimeException('Unable to create the unit-test temporary directory.');
 }
 define('TESTS_TEMP_DIR', $testTempDirectory);
 

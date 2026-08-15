@@ -37,6 +37,11 @@ class Viewlog extends \Magento\Backend\Block\Template
     protected $registry;
 
     /**
+     * @var \MageOS\ShoppingFeed\Model\Feed\OutputPath
+     */
+    protected $outputPath;
+
+    /**
      * @param \Magento\Backend\Block\Template\Context             $context
      * @param \Magento\Framework\App\Filesystem\DirectoryList     $directoryList
      * @param \Magento\Framework\Filesystem\Directory\ReadFactory
@@ -48,11 +53,13 @@ class Viewlog extends \Magento\Backend\Block\Template
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Framework\Filesystem\Directory\ReadFactory $readFactory,
         \Magento\Framework\Registry $registry,
+        \MageOS\ShoppingFeed\Model\Feed\OutputPath $outputPath,
         array $data = []
     ) {
         $this->directoryList = $directoryList;
         $this->readFactory = $readFactory;
         $this->registry = $registry;
+        $this->outputPath = $outputPath;
         parent::__construct($context, $data);
     }
 
@@ -65,15 +72,12 @@ class Viewlog extends \Magento\Backend\Block\Template
     {
         $file = false;
         $feed = $this->registry->registry('feed');
-        $mageRootPath = $this->directoryList->getRoot();
+        $feedLogFile = $this->outputPath->getLogFile($feed);
+        $directoryReader = $this->readFactory->create(dirname($feedLogFile));
 
-        $feedFolder = $mageRootPath . '/' . $feed->getConfig('general_feed_dir');
-        $feedLogFile = sprintf($feed->getConfig('file_log'), $feed->getId());
-        $directoryReader = $this->readFactory->create($feedFolder);
-
-        if ($directoryReader->isExist($feedLogFile)) {
+        if ($directoryReader->isExist(basename($feedLogFile))) {
             try {
-                $fileReader = $directoryReader->openFile($feedLogFile);
+                $fileReader = $directoryReader->openFile(basename($feedLogFile));
                 $file = $fileReader->readAll();
             } catch (\Exception $e) {
                 $this->setError(__('Log file cannot be read. Check permissions'));
@@ -83,8 +87,8 @@ class Viewlog extends \Magento\Backend\Block\Template
         }
         if ($file && !$this->getError()) {
             $this->setFileLines(explode(PHP_EOL, $file));
-        } else {
-            $this->setError(__('Log file %1 contains no records', str_replace($mageRootPath, '', $feedLogFile)));
+        } elseif (!$this->getError()) {
+            $this->setError(__('Log file %1 contains no records', $this->outputPath->getLogFile($feed, false)));
         }
         return $this;
     }

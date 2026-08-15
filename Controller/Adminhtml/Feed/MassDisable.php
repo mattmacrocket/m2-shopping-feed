@@ -25,8 +25,10 @@ use MageOS\ShoppingFeed\Model\ResourceModel\Feed\CollectionFactory as FeedCollec
 use MageOS\ShoppingFeed\Model\Feed\Source\Status;
 use MageOS\ShoppingFeed\Model\ResourceModel\Generator\Queue\CollectionFactory as QueueCollectionFactory;
 
-class MassDisable extends \Magento\Backend\App\Action
+class MassDisable extends \Magento\Backend\App\Action implements \Magento\Framework\App\Action\HttpPostActionInterface
 {
+    public const ADMIN_RESOURCE = 'MageOS_ShoppingFeed::save';
+
     /**
      * Massactions filter
      *

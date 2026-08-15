@@ -24,6 +24,8 @@ use Magento\Framework\View\Result\PageFactory;
 
 class Index extends \Magento\Backend\App\Action
 {
+    public const ADMIN_RESOURCE = 'MageOS_ShoppingFeed::grid';
+
     /**
      * @var \Magento\Framework\View\Result\PageFactory
      */

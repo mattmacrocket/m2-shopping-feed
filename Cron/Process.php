@@ -30,7 +30,7 @@ class Process
     protected $directoryList;
 
     /**
-     * @var \Magento\Framework\Filesystem\Io\File
+     * @var \Magento\Framework\Filesystem\Driver\File
      */
     protected $file;
 
@@ -68,7 +68,7 @@ class Process
 
     public function __construct(
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
-        \Magento\Framework\Filesystem\Io\File $file,
+        \Magento\Framework\Filesystem\Driver\File $file,
         \MageOS\ShoppingFeed\Model\Logger $logger,
         \MageOS\ShoppingFeed\Model\ResourceModel\Generator\Queue\Collection $queueCollection,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
@@ -92,12 +92,12 @@ class Process
     /**
      * Process feeds from queue
      *
-     * @return void
+     * @return bool True when there was no fatal processing failure.
      */
     public function execute()
     {
         if (!$this->isEnabled()) {
-            return;
+            return true;
         }
 
         if (is_null($this->feedId)) {
@@ -113,22 +113,33 @@ class Process
             $this->feedId = $queue->getFeedId();
 
             if ($this->acquireLock()) {
-                $queue->setRunning();
-                $generator = $queue->getGenerator();
+                $succeeded = true;
+                $generator = null;
                 try {
+                    $queue->setRunning();
+                    $generator = $queue->getGenerator();
                     $generator->run();
                 } catch (FeedException $e) {
                     // Limits reached, batch has been set, do nothing here.
                     $this->logger->error($e->getMessage());
-                } catch (\Exception $e) {
-                    $generator->updateStatus(\MageOS\ShoppingFeed\Model\Feed\Source\Status::STATUS_ERROR);
+                } catch (\Throwable $e) {
+                    $succeeded = false;
+                    if ($generator !== null) {
+                        $generator->updateStatus(\MageOS\ShoppingFeed\Model\Feed\Source\Status::STATUS_ERROR);
+                    }
                     $this->logger->error($e->getMessage());
+                } finally {
+                    $this->releaseLock();
                 }
-                $this->releaseLock();
+                return $succeeded;
             }
+
+            return false;
         } else {
             $this->logger->debug('Nothing in queue.');
         }
+
+        return true;
     }
 
     /**
@@ -151,8 +162,8 @@ class Process
     protected function getLockFile()
     {
         $id = !is_null($this->feedId) ? $this->feedId : 0;
-        if (!is_dir($this->directoryList->getPath('tmp'))) {
-            mkdir($this->directoryList->getPath('tmp'));
+        if (!$this->file->isDirectory($this->directoryList->getPath('tmp'))) {
+            $this->file->createDirectory($this->directoryList->getPath('tmp'));
         }
         return $this->directoryList->getPath('tmp') . '/mageos_shopping_feed_'. $id . '.lock';
     }
@@ -165,27 +176,37 @@ class Process
     public function acquireLock()
     {
         $lockFile = $this->getLockFile();
-        $this->lockFile = fopen($lockFile, "w");
-
-        if (!$this->file->fileExists($lockFile)) {
+        try {
+            $this->lockFile = $this->file->fileOpen($lockFile, "w");
+        } catch (\Magento\Framework\Exception\FileSystemException) {
             $this->logger->error(sprintf('Can\'t create lock file %s, grant write permissions!', $lockFile));
+            $this->closeLockFile();
+            return false;
+        }
+
+        if (!is_resource($this->lockFile) || !$this->file->isExists($lockFile)) {
+            $this->logger->error(sprintf('Can\'t create lock file %s, grant write permissions!', $lockFile));
+            $this->closeLockFile();
             return false;
         }
 
         // If the location is not writable, flock() does not work and it doesn't mean another script instance is running
-        if (!$this->file->isWriteable($lockFile)) {
+        if (!$this->file->isWritable($lockFile)) {
             $this->logger->error(sprintf('Path %s is not writable, grant write permissions!', $lockFile));
+            $this->closeLockFile();
             return false;
         }
 
-        if (empty($this->lockFile) || !flock($this->lockFile, LOCK_EX | LOCK_NB)) {
+        try {
+            $this->file->fileLock($this->lockFile, LOCK_EX | LOCK_NB);
+        } catch (\Magento\Framework\Exception\FileSystemException) {
             $this->logger->debug(sprintf('Another process is generating the feed! Remove %s to continue.', $lockFile));
+            $this->closeLockFile();
             return false;
         }
 
-        ftruncate($this->lockFile, 0); // truncate file
-        fwrite($this->lockFile, date('Y-m-d H:i:s'));
-        fflush($this->lockFile); // flush output before releasing the lock
+        $this->file->fileWrite($this->lockFile, date('Y-m-d H:i:s'));
+        $this->file->fileFlush($this->lockFile); // flush output before releasing the lock
         return true;
     }
 
@@ -194,7 +215,27 @@ class Process
      */
     public function releaseLock()
     {
-        flock($this->lockFile, LOCK_UN);
+        try {
+            if (is_resource($this->lockFile)) {
+                $this->file->fileUnlock($this->lockFile);
+            }
+        } finally {
+            $this->closeLockFile();
+        }
         return $this;
+    }
+
+    /**
+     * Close the lock handle without attempting to unlock it.
+     *
+     * @return void
+     */
+    private function closeLockFile()
+    {
+        $lockFile = $this->lockFile;
+        $this->lockFile = null;
+        if (is_resource($lockFile)) {
+            $this->file->fileClose($lockFile);
+        }
     }
 }

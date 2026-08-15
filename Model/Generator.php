@@ -146,6 +146,11 @@ class Generator extends DataObject
     protected $scopeConfig;
 
     /**
+     * @var \MageOS\ShoppingFeed\Model\Feed\OutputPath
+     */
+    protected $outputPath;
+
+    /**
      * Generator constructor.
      *
      * @param \Magento\Catalog\Model\ProductFactory                   $productFactory
@@ -183,6 +188,7 @@ class Generator extends DataObject
         \MageOS\ShoppingFeed\Model\Feed\ScheduleFactory $scheduleFactory,
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \MageOS\ShoppingFeed\Model\Feed\OutputPath $outputPath,
         ?\MageOS\ShoppingFeed\Model\Generator\Queue $queue = null,
         $testSku = null,
         $data = []
@@ -218,6 +224,7 @@ class Generator extends DataObject
         }
         $this->scheduleFactory = $scheduleFactory;
         $this->scopeConfig = $scopeConfig;
+        $this->outputPath = $outputPath;
 
         parent::__construct($data);
     }
@@ -792,7 +799,7 @@ class Generator extends DataObject
     public function getLogger()
     {
         if (!$this->hasData('feed_log_file') && !$this->isTestMode()) {
-            $feedLogFile = '/var/log/' . sprintf($this->feed->getConfig('file_log'), $this->feed->getId());
+            $feedLogFile = '/' . $this->outputPath->getLogFile($this->feed, false);
             $this->logger->addHandler($feedLogFile, $this->scopeConfig->getValue(self::XML_LOG_LEVEL));
             $this->setData('feed_log_file', $feedLogFile);
         }
@@ -806,18 +813,12 @@ class Generator extends DataObject
      */
     public function getFeedFile($absolute = true)
     {
-        $mageRootPath = $this->directoryList->getRoot();
-
         if (!$this->hasData('feed_file')) {
-            $feedFolder = $mageRootPath . '/' . $this->feed->getConfig('general_feed_dir');
-            if (!$this->fileDriver->isExists($feedFolder)) {
-                $this->fileDriver->createDirectory($feedFolder, 0777);
-            }
-            $feedFile = $feedFolder . '/'
-                . sprintf($this->feed->getConfig('file_feed'), $this->feed->getId());
-            $this->setData('feed_file', $feedFile);
+            $this->setData('feed_file', $this->outputPath->getFeedFile($this->feed));
         }
-        return $absolute ? $this->getData('feed_file') : str_replace($mageRootPath. '/', '', $this->getData('feed_file'));
+        return $absolute
+            ? $this->getData('feed_file')
+            : $this->outputPath->getFeedFile($this->feed, false);
     }
 
     /**

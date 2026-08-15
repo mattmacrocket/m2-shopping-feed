@@ -14,7 +14,10 @@ All notable changes to this project will be documented here.
 - Isolated Admin session keys used when restoring failed form submissions
 - Declarative schema whitelist regenerated from the consolidated database schema
 - Repository validation and CI checks for identity isolation, merged feed definitions, XML, Composer metadata, and PHP syntax
-- Portable Magento test bootstrap and the consolidated 257-test unit suite
+- Portable Magento test bootstrap and an expanded regression suite
+- Integration coverage for module dependency wiring and feed queue database contracts
+- CI installation, unit, integration, coding-standard, and dependency-injection compilation checks across supported Magento Open Source and Mage-OS releases
+- Private vulnerability reporting policy
 - Explicit MSI source-code to Google store-code mapping for Local Inventory
 - Streaming gzip generation for FTP and SFTP uploads
 - Current Google Ads `view_item` events for selected configurable variants
@@ -40,6 +43,15 @@ All notable changes to this project will be documented here.
 - Made stock handling safe when no legacy stock item is returned and avoided duplicate stock-status reads
 - Made empty-column replacement and option concatenation safe for incomplete configuration data
 - Corrected log-handler replacement so stale handlers are not retained
+- Restricted feed, Promotions, and log output to approved Magento directories and safe file extensions
+- Added explicit Admin ACL resources and POST-only contracts for feed mutations
+- Protected grid AJAX and export data sources with the feed-view ACL
+- Made manual and scheduled queue creation share the queue model's persistence invariants
+- Made required feed and queue database fields safe for new manual queue entries
+- Secured Google taxonomy downloads with HTTPS, locale validation, response-status checks, and deterministic connection cleanup
+- Guaranteed cron generation locks are released and closed after all PHP failures
+- Made the generation CLI return a failure exit code when queue processing fails
+- Made the shared Promotions cache hash-aware and atomically replaceable across concurrent feed processes
 
 ### Migration
 

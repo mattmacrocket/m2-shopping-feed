@@ -2,7 +2,16 @@ name: CI
 
 on:
   push:
+    branches:
+      - main
+      - feat/**
   pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -14,7 +23,7 @@ jobs:
       matrix:
         php-version: ['8.1', '8.2', '8.3', '8.4', '8.5']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
@@ -25,3 +34,42 @@ jobs:
         run: find . -path './.git' -prune -o -type f \( -name '*.php' -o -name '*.phtml' \) -print0 | xargs -0 -n1 php -l
       - name: Validate consolidated module
         run: php dev/tests/validate.php
+
+  compute-platform-matrix:
+    name: Compute supported platform matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.combine.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: graycoreio/github-actions-magento2/supported-version@v8.7.0
+        id: magento
+        with:
+          project: magento-open-source
+          kind: currently-supported
+      - uses: graycoreio/github-actions-magento2/supported-version@v8.7.0
+        id: mageos
+        with:
+          project: mage-os
+          kind: currently-supported
+      - name: Combine Magento Open Source and Mage-OS matrices
+        id: combine
+        env:
+          MAGENTO_MATRIX: ${{ steps.magento.outputs.matrix }}
+          MAGEOS_MATRIX: ${{ steps.mageos.outputs.matrix }}
+        run: |
+          matrix=$(jq -cn \
+            --argjson magento "$MAGENTO_MATRIX" \
+            --argjson mageos "$MAGEOS_MATRIX" \
+            '{magento: ($magento.magento + $mageos.magento), include: ($magento.include + $mageos.include)}')
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  check-extension:
+    name: Magento and Mage-OS production checks
+    needs: compute-platform-matrix
+    uses: graycoreio/github-actions-magento2/.github/workflows/check-extension.yaml@v8.7.0
+    with:
+      matrix: ${{ needs.compute-platform-matrix.outputs.matrix }}
+      fail-fast: false
+    secrets:
+      composer_auth: ${{ secrets.COMPOSER_AUTH }}

@@ -42,6 +42,16 @@ class Provider
     protected $promotionsCollection;
 
     /**
+     * @var \MageOS\ShoppingFeed\Model\Feed\OutputPath
+     */
+    protected $outputPath;
+
+    /**
+     * @var \Magento\Framework\Filesystem\Driver\File
+     */
+    protected $fileDriver;
+
+    /**
      * @var \MageOS\ShoppingFeed\Model\Feed
      */
     private $feed = null;
@@ -49,7 +59,12 @@ class Provider
     /**
      * @var string
      */
-    protected $hashCache = false;
+    protected $hashCache = null;
+
+    /**
+     * @var string|null
+     */
+    protected $hashCacheKey = null;
 
     /**
      * @var bool
@@ -64,7 +79,9 @@ class Provider
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \MageOS\ShoppingFeed\Model\Promotions\Provider\Map $map,
-        \MageOS\ShoppingFeed\Model\Promotions\Provider\Collection $promotionsCollection
+        \MageOS\ShoppingFeed\Model\Promotions\Provider\Collection $promotionsCollection,
+        \MageOS\ShoppingFeed\Model\Feed\OutputPath $outputPath,
+        \Magento\Framework\Filesystem\Driver\File $fileDriver
     ) {
 
         $this->helper = $helper;
@@ -74,6 +91,8 @@ class Provider
         $this->objectManager = $objectManager;
         $this->map = $map;
         $this->promotionsCollection = $promotionsCollection;
+        $this->outputPath = $outputPath;
+        $this->fileDriver = $fileDriver;
     }
 
     /**
@@ -83,6 +102,9 @@ class Provider
     public function setFeed(\MageOS\ShoppingFeed\Model\Feed $feed)
     {
         $this->feed = $feed;
+        $this->hashCache = null;
+        $this->hashCacheKey = null;
+        $this->fileCreated = false;
         return $this;
     }
 
@@ -132,10 +154,7 @@ class Provider
      */
     public function getPromotionFile()
     {
-        $feed= $this->getFeed();
-        return $this->directoryList->getRoot(). '/'
-            . rtrim($feed->getConfig('general_feed_dir'), '/'). '/'
-            . sprintf($feed->getConfig('file_promotion'), $feed->getId());
+        return $this->outputPath->getPromotionFile($this->getFeed());
     }
 
     /**
@@ -195,14 +214,29 @@ class Provider
 
         // Update current cache
         $this->hashCache = $cache;
+        $this->hashCacheKey = $hash;
 
-        //Update file cache
+        // Update file cache without exposing readers to a partially-written JSON document.
         $cacheFile = $this->getHashFile();
+        $temporaryFile = $cacheFile . '.' . getmypid() . '.tmp';
         $fileContent = [
             'cache' => $cache,
             'hash' => $hash
         ];
-        file_put_contents($cacheFile, $this->helper->jsonEncode($fileContent));
+        $this->fileDriver->createDirectory(dirname($cacheFile));
+        if ($this->fileDriver->isExists($temporaryFile)) {
+            $this->fileDriver->deleteFile($temporaryFile);
+        }
+
+        try {
+            $this->fileDriver->filePutContents($temporaryFile, $this->helper->jsonEncode($fileContent));
+            $this->fileDriver->rename($temporaryFile, $cacheFile);
+        } catch (\Throwable $exception) {
+            if ($this->fileDriver->isExists($temporaryFile)) {
+                $this->fileDriver->deleteFile($temporaryFile);
+            }
+            throw $exception;
+        }
 
         return $this;
     }
@@ -216,9 +250,11 @@ class Provider
     public function clearPromotionCache()
     {
         $cacheFile = $this->getHashFile();
-        if (file_exists($cacheFile)) {
-            unlink($cacheFile);
+        if ($this->fileDriver->isExists($cacheFile)) {
+            $this->fileDriver->deleteFile($cacheFile);
         }
+        $this->hashCache = null;
+        $this->hashCacheKey = null;
         return $this;
     }
 
@@ -230,17 +266,18 @@ class Provider
      */
     protected function getHashCache($hash = '')
     {
-        if (!$this->hashCache) {
+        if ($this->hashCache === null || $this->hashCacheKey !== $hash) {
             $cacheFile = $this->getHashFile();
             $cache = [];
-            if (file_exists($cacheFile) && is_readable($cacheFile)) {
-                $fileContent = file_get_contents($cacheFile);
+            if ($this->fileDriver->isExists($cacheFile) && $this->fileDriver->isReadable($cacheFile)) {
+                $fileContent = $this->fileDriver->fileGetContents($cacheFile);
                 $tmpCache = $this->helper->jsonDecode($fileContent);
                 if (is_array($tmpCache) && isset($tmpCache['hash']) && $tmpCache['hash'] == $hash && isset($tmpCache['cache'])) {
                     $cache = $tmpCache['cache'];
                 }
             }
             $this->hashCache = $cache;
+            $this->hashCacheKey = $hash;
         }
         return $this->hashCache;
     }

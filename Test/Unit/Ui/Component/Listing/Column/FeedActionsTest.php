@@ -1,115 +1,38 @@
 <?php
-/**
- * RocketWeb
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- *
- * @category  RocketWeb
- * @package   MageOS_ShoppingFeed
- * @copyright Copyright (c) 2016 RocketWeb (http://rocketweb.com)
- * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @author    Rocket Web Inc.
- */
+
+declare(strict_types=1);
 
 namespace MageOS\ShoppingFeed\Test\Unit\Ui\Component\Listing\Column;
 
+use Magento\Framework\UrlInterface;
+use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Magento\Framework\View\Element\UiComponentFactory;
 use MageOS\ShoppingFeed\Ui\Component\Listing\Column\FeedActions;
+use PHPUnit\Framework\TestCase;
 
-class FeedActionsTest extends \PHPUnit\Framework\TestCase
+class FeedActionsTest extends TestCase
 {
-    public function testPrepareItemsByFeedId()
+    public function testGenerateActionUsesMagentoPostActionTransport(): void
     {
-        $feedId = 1;
-        // Create Mocks and SUT
-        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        /**
- * @var \PHPUnit_Framework_MockObject_MockObject $urlBuilderMock
-*/
-        $urlBuilderMock = $this->getMockBuilder('Magento\Framework\UrlInterface')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $contextMock = $this->getMockBuilder('Magento\Framework\View\Element\UiComponent\ContextInterface')
-            ->getMockForAbstractClass();
-        $processor = $this->getMockBuilder('Magento\Framework\View\Element\UiComponent\Processor')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $contextMock->expects($this->any())->method('getProcessor')->willReturn($processor);
-
-        /**
- * @var \MageOS\ShoppingFeed\Ui\Component\Listing\Column\FeedActions $model
-*/
-        $model = $objectManager->getObject(
-            'MageOS\ShoppingFeed\Ui\Component\Listing\Column\FeedActions',
-            [
-                'urlBuilder' => $urlBuilderMock,
-                'context' => $contextMock,
-            ]
+        $urlBuilder = $this->createMock(UrlInterface::class);
+        $urlBuilder->method('getUrl')->willReturnCallback(
+            static fn (string $route, array $params = []): string => $route . '?id=' . $params['id']
         );
 
-        // Define test input and expectations
-        $items = [
-            'data' => [
-                'items' => [
-                    [
-                        'id' => $feedId
-                    ]
-                ]
-            ]
-        ];
-        $name = 'item_name';
-        $expectedItems = [
-            [
-                'id' => $feedId,
-                $name => '<a href="test/url/generate">Run Now</a>'. ' / <a href="test/url/edit" title="Do not change feed configuration while feed is processing.">Configure</a>'
-                        . ' <br /><a popup="1" href="test/url/test" onclick="window.open(this.href,\'feed_test\',\'width=1010,height=700,resizable=1,scrollbars=1\');return false;">Test Feed</a>'
-                        . ' / <a popup="1" href="test/url/viewlog" onclick="window.open(this.href,\'feed_logs\',\'width=835,height=700,resizable=1,scrollbars=1\');return false;">View Log</a>'
-            ]
-        ];
+        $column = new FeedActions(
+            $this->createMock(ContextInterface::class),
+            $this->createMock(UiComponentFactory::class),
+            $urlBuilder,
+            [],
+            ['name' => 'actions']
+        );
 
-        // Configure mocks and object data
-        $urlBuilderMock->expects($this->any())
-            ->method('getUrl')
-            ->willReturnMap(
-                [
-                    [
-                        FeedActions::FEED_URL_PATH_EDIT,
-                        [
-                            'id' => $feedId
-                        ],
-                        'test/url/edit',
-                    ],
-                    [
-                        FeedActions::FEED_URL_PATH_GENERATE,
-                        [
-                            'id' => $feedId
-                        ],
-                        'test/url/generate',
-                    ],
-                    [
-                        FeedActions::FEED_URL_PATH_TEST,
-                        [
-                            'id' => $feedId
-                        ],
-                        'test/url/test',
-                    ],
-                    [
-                        FeedActions::FEED_URL_PATH_VIEWLOG,
-                        [
-                            'id' => $feedId
-                        ],
-                        'test/url/viewlog',
-                    ],
-                ]
-            );
+        $result = $column->prepareDataSource(['data' => ['items' => [['id' => 7]]]]);
+        $actions = $result['data']['items'][0]['actions'];
 
-        $model->setName($name);
-        $items = $model->prepareDataSource($items);
-        // Run test
-        $this->assertEquals($expectedItems, $items['data']['items']);
+        $this->assertTrue($actions['generate']['post']);
+        $this->assertArrayHasKey('confirm', $actions['generate']);
+        $this->assertSame('mageos_shopping_feed/feed/generate?id=7', $actions['generate']['href']);
+        $this->assertSame('mageos_shopping_feed/feed/edit?id=7', $actions['edit']['href']);
     }
 }

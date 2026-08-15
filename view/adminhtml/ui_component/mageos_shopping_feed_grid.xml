@@ -20,6 +20,7 @@
             <argument name="requestFieldName" xsi:type="string">id</argument>
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
+                    <item name="aclResource" xsi:type="string">MageOS_ShoppingFeed::grid</item>
                     <item name="storageConfig" xsi:type="array">
                         <item name="indexField" xsi:type="string">id</item>
                     </item>
@@ -289,7 +290,6 @@
         <actionsColumn name="actions" class="MageOS\ShoppingFeed\Ui\Component\Listing\Column\FeedActions">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
                     <item name="label" xsi:type="string" translate="true">Actions</item>
                     <item name="fieldClass" xsi:type="string">mageos_shopping_feed_grid_actions</item>
                 </item>

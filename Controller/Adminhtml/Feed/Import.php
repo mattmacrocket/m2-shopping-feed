@@ -21,11 +21,11 @@ namespace MageOS\ShoppingFeed\Controller\Adminhtml\Feed;
 
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
-use MageOS\ShoppingFeed\Model\Logger;
-use Symfony\Component\Config\Definition\Exception\Exception;
 
 class Import extends \Magento\Backend\App\Action
 {
+    public const ADMIN_RESOURCE = 'MageOS_ShoppingFeed::grid';
+
     /**
      * @var PageFactory
      */
@@ -56,13 +56,4 @@ class Import extends \Magento\Backend\App\Action
         return $resultPage;
     }
 
-    /**
-     * Check if admin has permissions to visit related pages
-     *
-     * @return bool
-     */
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('MageOS_ShoppingFeed::grid');
-    }
 }

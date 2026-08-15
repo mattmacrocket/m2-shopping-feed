@@ -20,6 +20,8 @@ namespace MageOS\ShoppingFeed\Controller\Adminhtml\Feed;
 
 class Test extends \Magento\Backend\App\Action
 {
+    public const ADMIN_RESOURCE = 'MageOS_ShoppingFeed::grid';
+
     /**
      * @var \MageOS\ShoppingFeed\Controller\Adminhtml\Feed\Builder
      */

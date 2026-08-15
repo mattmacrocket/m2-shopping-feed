@@ -13,7 +13,7 @@ The four package namespaces and Magento module identities were flattened into `M
 
 The consolidation also resolves source-level integration defects that could not be represented safely in a single package. These include exact-version cross-package constraints, a duplicate Google Shopping default column, a missing Local Inventory encoding value, ignored gzip settings, stale Promotions values, incorrect reuse of upload credentials, and the retired DoubleClick remarketing transport.
 
-The imported unit suite was updated for the current Magento testing framework and PHP runtime. It now runs as one 257-test suite through the repository bootstrap in `Test/Unit/bootstrap.php`.
+The imported unit suite was updated for the current Magento testing framework and PHP runtime, then expanded with regression coverage for the consolidated module. It runs through the repository bootstrap in `Test/Unit/bootstrap.php`.
 
 Historical Rocket Web data patches were intentionally not imported. The new module creates fresh declarative-schema tables, so upgrades for serialized legacy rows are unnecessary. The legacy log migration also moves and deletes shared `pub/media/feeds/log_*.log` files, which would violate the coexistence boundary on a store running a paid package.
 

@@ -23,8 +23,10 @@ use Magento\Backend\App\Action\Context;
 use Magento\Ui\Component\MassAction\Filter;
 use MageOS\ShoppingFeed\Model\ResourceModel\Feed\CollectionFactory;
 
-class MassDelete extends \Magento\Backend\App\Action
+class MassDelete extends \Magento\Backend\App\Action implements \Magento\Framework\App\Action\HttpPostActionInterface
 {
+    public const ADMIN_RESOURCE = 'MageOS_ShoppingFeed::delete';
+
     /**
      * Massactions filter
      *

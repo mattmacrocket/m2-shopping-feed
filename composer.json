@@ -3,6 +3,7 @@
     "description": "Product feed generation for Mage-OS and Magento Open Source, including Google Shopping, Local Inventory, and Promotions.",
     "type": "magento2-module",
     "license": "OSL-3.0",
+    "minimum-stability": "stable",
     "authors": [
         {
             "name": "Rocket Web Inc.",
@@ -14,7 +15,7 @@
     ],
     "require": {
         "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
-        "magento/framework": "^103.0.4",
+        "magento/framework": "^103.0.6-p15",
         "magento/module-backend": ">=100.0 <200.0",
         "magento/module-bundle": ">=100.0 <200.0",
         "magento/module-catalog": ">=100.0 <200.0",
@@ -39,7 +40,6 @@
         "magento/module-weee": ">=100.0 <200.0",
         "monolog/monolog": "^2.0 || ^3.0",
         "psr/log": "^1.0 || ^2.0 || ^3.0",
-        "symfony/config": "^5.4 || ^6.0 || ^7.0",
         "symfony/console": "^5.4 || ^6.0 || ^7.0"
     },
     "suggest": {
@@ -54,6 +54,21 @@
             "MageOS\\ShoppingFeed\\": ""
         }
     },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "magento/composer-dependency-version-audit-plugin": true,
+            "magento/magento-composer-installer": false
+        }
+    },
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://mirror.mage-os.org/"
+        }
+    ],
     "support": {
         "issues": "https://github.com/mage-os-lab/module-shopping-feed/issues",
         "source": "https://github.com/mage-os-lab/module-shopping-feed"

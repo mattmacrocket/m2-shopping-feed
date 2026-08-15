@@ -206,6 +206,19 @@ class FeedTest extends ModelFramework
         ];
     }
 
+    public function testBeforeSaveInitializesRequiredMessagesPayload(): void
+    {
+        $this->feed->setData(
+            'config',
+            new \Magento\Framework\DataObject(['columns_product_columns' => []])
+        );
+        $this->feed->unsetData('messages');
+
+        $this->feed->beforeSave();
+
+        $this->assertSame('[]', $this->feed->getData('messages'));
+    }
+
     /**
      * Test getScheduleCollection method
      */

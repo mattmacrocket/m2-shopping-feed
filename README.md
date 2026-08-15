@@ -19,7 +19,7 @@ This is a new module identity prepared for Mage-OS Lab. Existing Rocket Web inst
 
 ## Requirements
 
-- Mage-OS or Magento Open Source with `magento/framework` 103.0.4 or later in the 103.x series
+- A currently supported Mage-OS or Magento Open Source release with `magento/framework` 103.0.6-p15 or later in the 103.x series
 - A PHP version supported by the selected platform release, within PHP 8.1 through PHP 8.5
 - Magento cron when scheduled feed generation is enabled
 - Magento Multi-Source Inventory APIs for source-level Local Inventory feeds
@@ -55,7 +55,7 @@ bin/magento mage-os:shopping-feed:schedule
 
 The dedicated `mageos_shopping_feed` cron group schedules feeds hourly and processes its queue every minute by default.
 
-Default feed output is written under `pub/media/mageos-shopping-feed`. Per-feed logs use `var/log/mageos_shopping_feed_*.log`.
+Feed output is restricted to `pub/media/mageos-shopping-feed` and its safe subdirectories. Per-feed logs are restricted to `var/log` and use `mageos_shopping_feed_*.log` by default.
 
 ## Development validation
 
@@ -79,7 +79,7 @@ Run the imported and modernized unit suite with the PHPUnit installation from th
 MAGENTO_ROOT=/path/to/magento /path/to/magento/vendor/bin/phpunit -c phpunit.xml.dist
 ```
 
-The suite currently contains 257 tests. Its bootstrap loads Magento's unit-test framework and the module directly, so the module does not need to be installed in the validation checkout.
+The unit-test bootstrap loads Magento's test framework and the module directly, so the module does not need to be installed in the validation checkout. CI also installs the package into currently supported Magento Open Source and Mage-OS releases, runs the unit and integration suites, checks the Magento coding standard, and compiles dependency injection.
 
 ## Provenance and license
 

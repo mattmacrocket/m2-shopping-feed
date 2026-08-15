@@ -29,11 +29,6 @@ class Generator implements ObserverInterface
     protected $helper;
 
     /**
-     * @var \Magento\Framework\App\Filesystem\DirectoryList
-     */
-    protected $directoryList;
-
-    /**
      * @var \Magento\SalesRule\Model\RuleFactory
      */
     protected $ruleFactory;
@@ -53,6 +48,11 @@ class Generator implements ObserverInterface
      */
     protected $promotionsCollection;
 
+    /**
+     * @var \Magento\Framework\Filesystem\Driver\File
+     */
+    protected $fileDriver;
+
 
     public function __construct(
         \Magento\Framework\Json\Helper\Data $helper,
@@ -60,15 +60,15 @@ class Generator implements ObserverInterface
         \MageOS\ShoppingFeed\Model\Promotions\Provider\Map $map,
         \MageOS\ShoppingFeed\Model\Promotions\Provider\Collection $promotionsCollection,
         \Magento\SalesRule\Model\RuleFactory $ruleFactory,
-        \Magento\Framework\App\Filesystem\DirectoryList $directoryList
+        \Magento\Framework\Filesystem\Driver\File $fileDriver
     ) {
 
         $this->helper = $helper;
         $this->provider = $provider;
         $this->map = $map;
         $this->ruleFactory = $ruleFactory;
-        $this->directoryList = $directoryList;
         $this->promotionsCollection = $promotionsCollection;
+        $this->fileDriver = $fileDriver;
     }
 
     /**
@@ -100,7 +100,7 @@ class Generator implements ObserverInterface
         $file = $this->provider->getPromotionFile();
 
         $fileLines = [];
-        if (!isset($config['hash']) || $config['hash'] != $hash || !file_exists($file)) {
+        if (!isset($config['hash']) || $config['hash'] != $hash || !$this->fileDriver->isExists($file)) {
             $this->provider->clearPromotionCache();
             $this->map->setProvider($this->provider);
 
@@ -120,15 +120,7 @@ class Generator implements ObserverInterface
         }
 
         if (!empty($fileOutput)) {
-            if (file_exists($file) && !is_writable($file)) {
-                $generator->getLogger()->error(sprintf('Not enough permissions to write to file %s.', $file));
-                return $this;
-            }
-            file_put_contents($file, $fileOutput);
-            if (!file_exists($file)) {
-                $generator->getLogger()->error(sprintf('Not enough permissions to write to file %s.', $file));
-                return $this;
-            }
+            $this->writePromotionFile($file, $fileOutput);
 
             $linesCount = count($fileLines) > 0 ? count($fileLines) - 1 : 0;
             if ($linesCount) {
@@ -150,6 +142,31 @@ class Generator implements ObserverInterface
             $generator->getLogger()->info(sprintf('No changes | in %s', $file));
         }
         return $this;
+    }
+
+    /**
+     * Replace a promotion feed only after the complete new file has been written.
+     *
+     * @param string $file
+     * @param string $contents
+     * @return void
+     */
+    protected function writePromotionFile($file, $contents)
+    {
+        $temporaryFile = $file . '.tmp';
+        if ($this->fileDriver->isExists($temporaryFile)) {
+            $this->fileDriver->deleteFile($temporaryFile);
+        }
+
+        try {
+            $this->fileDriver->filePutContents($temporaryFile, $contents);
+            $this->fileDriver->rename($temporaryFile, $file);
+        } catch (\Throwable $exception) {
+            if ($this->fileDriver->isExists($temporaryFile)) {
+                $this->fileDriver->deleteFile($temporaryFile);
+            }
+            throw $exception;
+        }
     }
 
     /**
