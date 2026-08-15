@@ -17,6 +17,18 @@ $assert(($composer['type'] ?? null) === 'magento2-module', 'Unexpected Composer 
 $assert(($composer['autoload']['psr-4']['MageOS\\ShoppingFeed\\'] ?? null) === '', 'Unexpected PSR-4 mapping');
 $assert(($composer['license'] ?? null) === 'OSL-3.0', 'Composer license must use the SPDX OSL-3.0 identifier');
 
+$ciWorkflow = (string) file_get_contents($root . '/.github/workflows/ci.yml');
+$assert(str_contains($ciWorkflow, 'check-magento:'), 'Magento Open Source CI job is missing');
+$assert(str_contains($ciWorkflow, 'check-mageos:'), 'Mage-OS CI job is missing');
+$assert(
+    str_contains($ciWorkflow, 'magento_repository: https://mirror.mage-os.org/'),
+    'Magento Open Source CI must install from the public Magento mirror'
+);
+$assert(
+    str_contains($ciWorkflow, 'magento_repository: https://repo.mage-os.org/'),
+    'Mage-OS CI must install from the Mage-OS distribution repository'
+);
+
 $moduleXml = (string) file_get_contents($root . '/etc/module.xml');
 $registration = (string) file_get_contents($root . '/registration.php');
 $assert(str_contains($moduleXml, 'name="MageOS_ShoppingFeed"'), 'Magento module name is missing');

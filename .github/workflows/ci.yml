@@ -39,7 +39,8 @@ jobs:
     name: Compute supported platform matrix
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.combine.outputs.matrix }}
+      magento_matrix: ${{ steps.magento.outputs.matrix }}
+      mageos_matrix: ${{ steps.mageos.outputs.matrix }}
     steps:
       - uses: actions/checkout@v6
       - uses: graycoreio/github-actions-magento2/supported-version@v8.7.0
@@ -52,24 +53,25 @@ jobs:
         with:
           project: mage-os
           kind: currently-supported
-      - name: Combine Magento Open Source and Mage-OS matrices
-        id: combine
-        env:
-          MAGENTO_MATRIX: ${{ steps.magento.outputs.matrix }}
-          MAGEOS_MATRIX: ${{ steps.mageos.outputs.matrix }}
-        run: |
-          matrix=$(jq -cn \
-            --argjson magento "$MAGENTO_MATRIX" \
-            --argjson mageos "$MAGEOS_MATRIX" \
-            '{magento: ($magento.magento + $mageos.magento), include: ($magento.include + $mageos.include)}')
-          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
-  check-extension:
-    name: Magento and Mage-OS production checks
+  check-magento:
+    name: Magento Open Source production checks
     needs: compute-platform-matrix
     uses: graycoreio/github-actions-magento2/.github/workflows/check-extension.yaml@v8.7.0
     with:
-      matrix: ${{ needs.compute-platform-matrix.outputs.matrix }}
+      magento_repository: https://mirror.mage-os.org/
+      matrix: ${{ needs.compute-platform-matrix.outputs.magento_matrix }}
+      fail-fast: false
+    secrets:
+      composer_auth: ${{ secrets.COMPOSER_AUTH }}
+
+  check-mageos:
+    name: Mage-OS production checks
+    needs: compute-platform-matrix
+    uses: graycoreio/github-actions-magento2/.github/workflows/check-extension.yaml@v8.7.0
+    with:
+      magento_repository: https://repo.mage-os.org/
+      matrix: ${{ needs.compute-platform-matrix.outputs.mageos_matrix }}
       fail-fast: false
     secrets:
       composer_auth: ${{ secrets.COMPOSER_AUTH }}

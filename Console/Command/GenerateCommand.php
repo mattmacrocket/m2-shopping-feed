@@ -93,7 +93,7 @@ class GenerateCommand extends Command
     /**
      * Set name and description
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('mage-os:shopping-feed:generate')
             ->setDescription('Generates all feeds or specific feed/sku if arguments passed')
@@ -104,7 +104,7 @@ class GenerateCommand extends Command
      * @param InputInterface                                           $input
      * @param OutputInterface|\Symfony\Component\Console\Output\Output $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->state->setAreaCode('frontend');
         $feedId = $input->getArgument(self::INPUT_KEY_FEED_ID);

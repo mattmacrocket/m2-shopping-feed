@@ -186,6 +186,11 @@ class ModelFramework extends \PHPUnit\Framework\TestCase
      */
     protected $loggerMock;
 
+    /**
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $localeDateMock;
+
 
     /****
      * M

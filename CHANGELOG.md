@@ -51,7 +51,9 @@ All notable changes to this project will be documented here.
 - Secured Google taxonomy downloads with HTTPS, locale validation, response-status checks, and deterministic connection cleanup
 - Guaranteed cron generation locks are released and closed after all PHP failures
 - Made the generation CLI return a failure exit code when queue processing fails
+- Made both CLI commands compatible with Symfony Console 7 return-type contracts
 - Made the shared Promotions cache hash-aware and atomically replaceable across concurrent feed processes
+- Removed PHP 8.2 dynamic-property deprecations from the legacy unit-test fixtures
 
 ### Migration
 
@@ -61,3 +63,4 @@ All notable changes to this project will be documented here.
 ### Changed
 
 - Aligned Composer metadata, source notices, and the bundled license on OSL-3.0
+- Split Magento Open Source and Mage-OS CI matrices so each distribution installs from its official Composer repository

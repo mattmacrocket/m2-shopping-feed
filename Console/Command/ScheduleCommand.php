@@ -43,7 +43,7 @@ class ScheduleCommand extends Command
     /**
      * Set name and description
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('mage-os:shopping-feed:schedule')
             ->setDescription('Generates queues from schedule');
@@ -53,7 +53,7 @@ class ScheduleCommand extends Command
      * @param InputInterface                                           $input
      * @param OutputInterface|\Symfony\Component\Console\Output\Output $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->schedule->execute();
         if ($output->isVerbose()) {
@@ -63,6 +63,6 @@ class ScheduleCommand extends Command
                 $output->writeln('No schedule processed.');
             }
         }
-        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;;
+        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
     }
 }

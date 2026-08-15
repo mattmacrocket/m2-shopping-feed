@@ -31,6 +31,9 @@ class OptionsHandlingTest extends ModelFramework
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
+    /** @var \MageOS\ShoppingFeed\Model\Feed\Source\Product\OptionHandling */
+    protected $sourceMode;
+
     protected function setUp(): void
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
