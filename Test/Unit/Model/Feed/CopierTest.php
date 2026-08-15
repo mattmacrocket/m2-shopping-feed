@@ -91,10 +91,9 @@ class CopierTest extends ModelFramework
      */
     public function testCopy()
     {
-        $duplicateMock = $this->getMockBuilder('\MageOS\ShoppingFeed\Model\Feed')
-            ->disableOriginalConstructor()
-            ->setMethods(
-                ['__wakeup',
+        $duplicateMock = $this->getModelMock(
+            '\MageOS\ShoppingFeed\Model\Feed',
+            ['__wakeup',
                 'setData',
                 'setName',
                 'getName',
@@ -106,7 +105,7 @@ class CopierTest extends ModelFramework
                 'setConfig',
                 'setUploads',
                 'save']
-            )->getMock();
+        );
 
         $duplicateMock->expects($this->any())
             ->method('save')

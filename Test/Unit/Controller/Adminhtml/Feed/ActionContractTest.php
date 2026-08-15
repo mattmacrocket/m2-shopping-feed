@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageOS\ShoppingFeed\Test\Unit\Controller\Adminhtml\Feed;
 
 use Magento\Framework\App\Action\HttpPostActionInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -29,6 +30,7 @@ class ActionContractTest extends TestCase
     /**
      * @dataProvider aclResourceProvider
      */
+    #[DataProvider('aclResourceProvider')]
     public function testEveryAdminActionDeclaresItsLeastPrivilegeResource(
         string $action,
         string $expectedResource
@@ -39,7 +41,7 @@ class ActionContractTest extends TestCase
         $this->assertSame($expectedResource, $reflection->getConstant('ADMIN_RESOURCE'));
     }
 
-    public function aclResourceProvider(): array
+    public static function aclResourceProvider(): array
     {
         return [
             'delete' => [\MageOS\ShoppingFeed\Controller\Adminhtml\Feed\Delete::class, 'MageOS_ShoppingFeed::delete'],
@@ -62,12 +64,13 @@ class ActionContractTest extends TestCase
     /**
      * @dataProvider mutatingActionProvider
      */
+    #[DataProvider('mutatingActionProvider')]
     public function testMutatingAdminActionsOnlyAcceptPost(string $action): void
     {
         $this->assertContains(HttpPostActionInterface::class, class_implements($action));
     }
 
-    public function mutatingActionProvider(): array
+    public static function mutatingActionProvider(): array
     {
         return [
             [\MageOS\ShoppingFeed\Controller\Adminhtml\Feed\Delete::class],

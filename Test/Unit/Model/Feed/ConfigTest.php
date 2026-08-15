@@ -62,15 +62,15 @@ class ConfigTest extends ModelFramework
         $resource = $this->createMock('Magento\Review\Model\ResourceModel\Review');
         $resourceCollection = $this->createMock('Magento\Framework\Data\Collection\AbstractDb');
 
-        $this->jsonEncoderMock = $this->getMockBuilder('Magento\Framework\Json\EncoderInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(['encode'])
-            ->getMock();
+        $this->jsonEncoderMock = $this->getModelMock(
+            'Magento\Framework\Json\EncoderInterface',
+            ['encode']
+        );
 
-        $this->jsonDecoderMock = $this->getMockBuilder('Magento\Framework\Json\DecoderInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(['decode'])
-            ->getMock();
+        $this->jsonDecoderMock = $this->getModelMock(
+            'Magento\Framework\Json\DecoderInterface',
+            ['decode']
+        );
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(

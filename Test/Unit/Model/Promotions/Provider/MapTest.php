@@ -3,9 +3,9 @@
 namespace MageOS\ShoppingFeed\Test\Unit\Model\Promotions\Provider;
 
 use MageOS\ShoppingFeed\Model\Promotions\Provider\Map;
-use PHPUnit\Framework\TestCase;
+use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
-class MapTest extends TestCase
+class MapTest extends CompatibilityTestCase
 {
     public function testUsesCurrentGooglePromotionEnumValues(): void
     {
@@ -19,10 +19,10 @@ class MapTest extends TestCase
     {
         $serializer = $this->createMock('Magento\Framework\Serialize\SerializerInterface');
         $map = new Map($serializer);
-        $rule = $this->getMockBuilder('Magento\SalesRule\Model\Rule')
-            ->disableOriginalConstructor()
-            ->addMethods(['getCouponType'])
-            ->getMock();
+        $rule = $this->createCompatibleMock(
+            'Magento\SalesRule\Model\Rule',
+            ['getCouponType']
+        );
         $rule->method('getCouponType')->willReturnOnConsecutiveCalls(1, 2);
 
         $this->assertSame('no_code', $map->mapOfferType($rule));

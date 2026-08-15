@@ -13,9 +13,9 @@ use MageOS\ShoppingFeed\Model\Generator;
 use MageOS\ShoppingFeed\Model\Generator\Queue;
 use MageOS\ShoppingFeed\Model\Logger;
 use MageOS\ShoppingFeed\Model\ResourceModel\Generator\Queue\Collection;
-use PHPUnit\Framework\TestCase;
+use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
-class ProcessTest extends TestCase
+class ProcessTest extends CompatibilityTestCase
 {
     public function testUnexpectedThrowableMarksFeedAsErrorAndAlwaysReleasesLock(): void
     {
@@ -75,11 +75,10 @@ class ProcessTest extends TestCase
 
     private function createProcess(Generator $generator, Logger $logger): Process
     {
-        $queue = $this->getMockBuilder(Queue::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getGenerator', 'setRunning'])
-            ->addMethods(['getFeedId'])
-            ->getMock();
+        $queue = $this->createCompatibleMock(
+            Queue::class,
+            ['getGenerator', 'setRunning', 'getFeedId']
+        );
         $queue->method('getFeedId')->willReturn(17);
         $queue->method('getGenerator')->willReturn($generator);
         $queue->method('setRunning')->willReturnSelf();

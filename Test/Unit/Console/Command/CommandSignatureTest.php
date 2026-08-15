@@ -6,6 +6,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Console\Command;
 
 use MageOS\ShoppingFeed\Console\Command\GenerateCommand;
 use MageOS\ShoppingFeed\Console\Command\ScheduleCommand;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
@@ -26,6 +27,7 @@ class CommandSignatureTest extends TestCase
      * @param class-string $commandClass
      * @dataProvider commandProvider
      */
+    #[DataProvider('commandProvider')]
     public function testExecuteDeclaresIntegerReturnType(string $commandClass): void
     {
         $returnType = (new ReflectionMethod($commandClass, 'execute'))->getReturnType();
@@ -38,6 +40,7 @@ class CommandSignatureTest extends TestCase
      * @param class-string $commandClass
      * @dataProvider commandProvider
      */
+    #[DataProvider('commandProvider')]
     public function testConfigureDeclaresVoidReturnType(string $commandClass): void
     {
         $returnType = (new ReflectionMethod($commandClass, 'configure'))->getReturnType();

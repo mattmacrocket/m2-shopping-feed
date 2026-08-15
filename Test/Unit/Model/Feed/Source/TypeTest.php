@@ -42,11 +42,10 @@ class TypeTest extends ModelFramework
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->feedTypesConfigMock = $this->getMockBuilder(
-            'MageOS\ShoppingFeed\Model\FeedTypes\Config'
-        )->disableOriginalConstructor()
-            ->setMethods(['getAll'])
-            ->getMock();
+        $this->feedTypesConfigMock = $this->getModelMock(
+            'MageOS\ShoppingFeed\Model\FeedTypes\Config',
+            ['getAll']
+        );
 
         $this->feedTypesConfigMock->expects($this->once())
             ->method('getAll')

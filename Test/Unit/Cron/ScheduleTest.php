@@ -18,20 +18,19 @@ use MageOS\ShoppingFeed\Model\ResourceModel\Feed\Schedule\Collection as Schedule
 use MageOS\ShoppingFeed\Model\ResourceModel\Feed\Schedule\CollectionFactory as ScheduleCollectionFactory;
 use MageOS\ShoppingFeed\Model\ResourceModel\Generator\Queue\Collection as QueueCollection;
 use MageOS\ShoppingFeed\Model\ResourceModel\Generator\Queue\CollectionFactory as QueueCollectionFactory;
-use PHPUnit\Framework\TestCase;
+use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
-class ScheduleTest extends TestCase
+class ScheduleTest extends CompatibilityTestCase
 {
     public function testScheduledGenerationUsesQueueInvariantEntryPoint(): void
     {
         $scopeConfig = $this->createMock(ScopeConfigInterface::class);
         $scopeConfig->method('getValue')->with(ScheduleCron::XML_PATH_ENABLED)->willReturn(true);
 
-        $schedule = $this->getMockBuilder(Schedule::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['save'])
-            ->addMethods(['getFeedId', 'getBatchMode', 'setProcessedAt'])
-            ->getMock();
+        $schedule = $this->createCompatibleMock(
+            Schedule::class,
+            ['save', 'getFeedId', 'getBatchMode', 'setProcessedAt']
+        );
         $schedule->method('getFeedId')->willReturn(17);
         $schedule->method('getBatchMode')->willReturn(false);
         $schedule->method('setProcessedAt')->willReturnSelf();

@@ -20,11 +20,12 @@
 namespace MageOS\ShoppingFeed\Test\Unit\Model;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
 /**
  * Class LoggerTest
  */
-class LoggerTest extends \PHPUnit\Framework\TestCase
+class LoggerTest extends CompatibilityTestCase
 {
     /**
      * @var \MageOS\ShoppingFeed\Model\Logger
@@ -43,10 +44,10 @@ class LoggerTest extends \PHPUnit\Framework\TestCase
 
     public function setUp(): void
     {
-        $this->handlerFactoryMock = $this->getMockBuilder('MageOS\ShoppingFeed\Model\Logger\HandlerFactory')
-            ->disableOriginalConstructor()
-            ->setMethods(['create'])
-            ->getMock();
+        $this->handlerFactoryMock = $this->createCompatibleMock(
+            'MageOS\ShoppingFeed\Model\Logger\HandlerFactory',
+            ['create']
+        );
 
         $this->handlerFactoryMock->expects($this->any())
             ->method('create')

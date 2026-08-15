@@ -44,7 +44,9 @@ class StartAtTest extends ModelFramework
             ->will($this->returnValue('en_US'));
 
         /** @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDateMock */
-        $localeDateMock = $this->getMockBuilder('\Magento\Framework\Stdlib\DateTime\TimezoneInterface')->getMockForAbstractClass();
+        $localeDateMock = $this->getModelMock(
+            '\Magento\Framework\Stdlib\DateTime\TimezoneInterface'
+        );
 
         $localeDateMock->expects($this->exactly(24))
             ->method('date')

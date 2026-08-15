@@ -195,6 +195,21 @@ class AvailableMethodsTest extends ModelFramework
             ->will($this->returnValue('fedex'));
     }
 
+    private function expectCarrierTitles(array $titles): void
+    {
+        $paths = array_keys($titles);
+        $values = array_values($titles);
+        $call = 0;
+
+        $this->scopeConfig->expects($this->exactly(count($titles)))
+            ->method('getValue')
+            ->willReturnCallback(function ($path, $scope, $scopeId) use (&$call, $paths, $values) {
+                $this->assertSame([$paths[$call], 'store', null], [$path, $scope, $scopeId]);
+
+                return $values[$call++];
+            });
+    }
+
     public function testToOptionArray()
     {
         $this->prepareFlatrateMock(true);
@@ -202,18 +217,11 @@ class AvailableMethodsTest extends ModelFramework
         $this->prepareFreeshippingMock(true);
         $this->prepareFedexMock(true);
 
-        $this->scopeConfig->expects($this->exactly(3))
-            ->method('getValue')
-            ->withConsecutive(
-                ['carriers/flatrate/title', 'store', null],
-                ['carriers/tablerate/title', 'store', null],
-                ['carriers/freeshipping/title', 'store', null]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $this->returnValue('Flat Rate'),
-                $this->returnValue('Best Way'),
-                $this->returnValue('Free Shipping')
-            );
+        $this->expectCarrierTitles([
+            'carriers/flatrate/title' => 'Flat Rate',
+            'carriers/tablerate/title' => 'Best Way',
+            'carriers/freeshipping/title' => 'Free Shipping',
+        ]);
 
         $this->assertEquals([
             ['value' => '', 'label' => ''],
@@ -230,16 +238,10 @@ class AvailableMethodsTest extends ModelFramework
         $this->prepareFreeshippingMock(true);
         $this->prepareFedexMock(true);
 
-        $this->scopeConfig->expects($this->exactly(2))
-            ->method('getValue')
-            ->withConsecutive(
-                ['carriers/flatrate/title', 'store', null],
-                ['carriers/freeshipping/title', 'store', null]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $this->returnValue('Flat Rate'),
-                $this->returnValue('Free Shipping')
-            );
+        $this->expectCarrierTitles([
+            'carriers/flatrate/title' => 'Flat Rate',
+            'carriers/freeshipping/title' => 'Free Shipping',
+        ]);
 
         $this->assertEquals([
             ['value' => '', 'label' => ''],
@@ -255,16 +257,10 @@ class AvailableMethodsTest extends ModelFramework
         $this->prepareFreeshippingMock(true);
         $this->prepareFedexMock(true);
 
-        $this->scopeConfig->expects($this->exactly(2))
-            ->method('getValue')
-            ->withConsecutive(
-                ['carriers/flatrate/title', 'store', null],
-                ['carriers/freeshipping/title', 'store', null]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $this->returnValue('Flat Rate'),
-                $this->returnValue('Free Shipping')
-            );
+        $this->expectCarrierTitles([
+            'carriers/flatrate/title' => 'Flat Rate',
+            'carriers/freeshipping/title' => 'Free Shipping',
+        ]);
 
         $this->assertEquals([
             ['value' => '', 'label' => ''],
@@ -280,18 +276,11 @@ class AvailableMethodsTest extends ModelFramework
         $this->prepareFreeshippingMock(true);
         $this->prepareFedexMock(true);
 
-        $this->scopeConfig->expects($this->exactly(3))
-            ->method('getValue')
-            ->withConsecutive(
-                ['carriers/flatrate/title', 'store', null],
-                ['carriers/tablerate/title', 'store', null],
-                ['carriers/freeshipping/title', 'store', null]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $this->returnValue('Flat Rate'),
-                $this->returnValue('Best Way'),
-                $this->returnValue('Free Shipping')
-            );
+        $this->expectCarrierTitles([
+            'carriers/flatrate/title' => 'Flat Rate',
+            'carriers/tablerate/title' => 'Best Way',
+            'carriers/freeshipping/title' => 'Free Shipping',
+        ]);
 
         $this->sourceAvailableMethods->toOptionArray();
         $this->assertEquals([

@@ -93,7 +93,6 @@ class GeneratorTest extends TestCase
     private function invoke($method, array $arguments = [])
     {
         $reflection = new \ReflectionMethod($this->observer, $method);
-        $reflection->setAccessible(true);
         return $reflection->invokeArgs($this->observer, $arguments);
     }
 }

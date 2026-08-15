@@ -38,7 +38,6 @@ class ProviderTest extends TestCase
 
         $provider = $this->createProvider($helper, $directoryList, $fileDriver);
         $method = new \ReflectionMethod($provider, 'getHashCache');
-        $method->setAccessible(true);
 
         $this->assertSame(['42' => ['FIRST']], $method->invoke($provider, 'first'));
         $this->assertSame(['42' => ['SECOND']], $method->invoke($provider, 'second'));
@@ -66,7 +65,6 @@ class ProviderTest extends TestCase
         $provider = $this->createProvider($helper, $directoryList, $fileDriver);
 
         $method = new \ReflectionMethod($provider, 'setPromotionCache');
-        $method->setAccessible(true);
         $method->invoke($provider, 42, 'hash', ['PROMO']);
     }
 

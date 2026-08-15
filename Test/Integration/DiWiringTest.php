@@ -12,6 +12,7 @@ use MageOS\ShoppingFeed\Model\Feed\OutputPath;
 use MageOS\ShoppingFeed\Model\Generator;
 use MageOS\ShoppingFeed\Model\Promotions\Provider;
 use MageOS\ShoppingFeed\Model\Taxonomy\Type\GoogleShopping;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,6 +25,7 @@ class DiWiringTest extends TestCase
     /**
      * @dataProvider serviceProvider
      */
+    #[DataProvider('serviceProvider')]
     public function testServiceIsInstantiableViaDi(string $service): void
     {
         $instance = Bootstrap::getObjectManager()->create($service);
@@ -31,7 +33,7 @@ class DiWiringTest extends TestCase
         $this->assertInstanceOf($service, $instance);
     }
 
-    public function serviceProvider(): array
+    public static function serviceProvider(): array
     {
         return [
             OutputPath::class => [OutputPath::class],

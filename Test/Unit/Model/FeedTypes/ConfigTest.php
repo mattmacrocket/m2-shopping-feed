@@ -20,6 +20,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Model\FeedTypes;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ConfigTest extends ModelFramework
 {
@@ -65,6 +66,7 @@ class ConfigTest extends ModelFramework
      * @param array $value
      * @param mixed $expected
      */
+    #[DataProvider('getFeedDataProvider')]
     public function testGetFeed($value, $expected)
     {
         $this->cacheMock->expects($this->any())->method('load')->will(
@@ -87,7 +89,7 @@ class ConfigTest extends ModelFramework
         $this->assertEquals($expected, $this->model->getFeed('google_shoping'));
     }
 
-    public function getFeedDataProvider()
+    public static function getFeedDataProvider()
     {
         return [
             'global_key_exist' => [['feed' => ['google_shoping' => 'value']], 'value'],
@@ -125,6 +127,7 @@ class ConfigTest extends ModelFramework
      * @param array $value
      * @param mixed $expected
      */
+    #[DataProvider('getIsAllowedDirectiveProvider')]
     public function testIsAllowedDirective($value, $expected)
     {
         $this->cacheMock->expects($this->once())->method('load')->will(
@@ -147,7 +150,7 @@ class ConfigTest extends ModelFramework
         $this->assertEquals($expected, $this->model->isAllowedDirective('generic', 'some_directive'));
     }
 
-    public function getIsAllowedDirectiveProvider()
+    public static function getIsAllowedDirectiveProvider()
     {
         return [
             'is_allowed' => [['feed' => ['generic' => ['directives' => ['some_directive' => ['Expected Data']]]]], true],
@@ -161,6 +164,7 @@ class ConfigTest extends ModelFramework
      * @param $value
      * @param $expected
      */
+    #[DataProvider('getDirectiveProvider')]
     public function testGetDirective($value, $expected)
     {
         $this->cacheMock->expects($this->once())->method('load')->will(
@@ -183,7 +187,7 @@ class ConfigTest extends ModelFramework
         $this->assertEquals($expected, $this->model->getDirective('generic', 'some_directive'));
     }
 
-    public function getDirectiveProvider()
+    public static function getDirectiveProvider()
     {
         return [
             'is_allowed' => [['feed' => ['generic' => ['directives' => ['some_directive' => ['Expected Data']]]]], ['Expected Data']]

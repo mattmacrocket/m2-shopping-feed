@@ -20,8 +20,9 @@
 namespace MageOS\ShoppingFeed\Test\Unit\Model\Product;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
-class HelperTest extends \PHPUnit\Framework\TestCase
+class HelperTest extends CompatibilityTestCase
 {
     /**
      * @var \MageOS\ShoppingFeed\Model\Product\Helper
@@ -59,29 +60,25 @@ class HelperTest extends \PHPUnit\Framework\TestCase
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->stockRegistryMock = $this->getMockBuilder(
-            'Magento\CatalogInventory\Model\StockRegistry'
-        )->disableOriginalConstructor()
-            ->setMethods(['getStockItem', 'getMinSaleQty', 'getQtyIncrements'])
-            ->getMock();
+        $this->stockRegistryMock = $this->createCompatibleMock(
+            'Magento\CatalogInventory\Model\StockRegistry',
+            ['getStockItem', 'getMinSaleQty', 'getQtyIncrements']
+        );
 
-        $this->msrpMock = $this->getMockBuilder(
-            '\Magento\Msrp\Model\Config'
-        )->disableOriginalConstructor()
-            ->setMethods(['isEnabled'])
-            ->getMock();
+        $this->msrpMock = $this->createCompatibleMock(
+            '\Magento\Msrp\Model\Config',
+            ['isEnabled']
+        );
 
-        $this->productMock = $this->getMockBuilder(
-            '\Magento\Catalog\Model\Product'
-        )->disableOriginalConstructor()
-            ->setMethods(['getId', 'getPrice', 'getMsrp', 'hasMsrp'])
-            ->getMock();
+        $this->productMock = $this->createCompatibleMock(
+            '\Magento\Catalog\Model\Product',
+            ['getId', 'getPrice', 'getMsrp', 'hasMsrp']
+        );
 
-        $this->feedMock = $this->getMockBuilder(
-            'MageOS\ShoppingFeed\Model\Feed'
-        )->disableOriginalConstructor()
-            ->setMethods(['getId', 'getConfig'])
-            ->getMock();
+        $this->feedMock = $this->createCompatibleMock(
+            'MageOS\ShoppingFeed\Model\Feed',
+            ['getId', 'getConfig']
+        );
         $this->feedMock->expects($this->any())
             ->method('getConfig')
             ->will($this->returnValue(true));

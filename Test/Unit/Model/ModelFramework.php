@@ -2,10 +2,12 @@
 
 namespace MageOS\ShoppingFeed\Test\Unit\Model;
 
+use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
+
 /**
  * Class ModelFramework
  */
-class ModelFramework extends \PHPUnit\Framework\TestCase
+class ModelFramework extends CompatibilityTestCase
 {
     /****
      * A
@@ -736,7 +738,9 @@ class ModelFramework extends \PHPUnit\Framework\TestCase
             ->method('format')
             ->will($this->returnValue(date('Y-m-d H:i:s')));
 
-        $this->localeDateMock = $this->getMockBuilder('\Magento\Framework\Stdlib\DateTime\TimezoneInterface')->getMockForAbstractClass();
+        $this->localeDateMock = $this->getModelMock(
+            '\Magento\Framework\Stdlib\DateTime\TimezoneInterface'
+        );
         $this->localeDateMock->expects($this->any())
             ->method('date')
             ->will($this->returnValue($datetimeMock));
@@ -751,10 +755,7 @@ class ModelFramework extends \PHPUnit\Framework\TestCase
      */
     public function getModelMock($className, array $methods = [])
     {
-        return $this->getMockBuilder($className)
-            ->disableOriginalConstructor()
-            ->setMethods($methods)
-            ->getMock();
+        return $this->createCompatibleMock($className, $methods);
     }
 
     /**

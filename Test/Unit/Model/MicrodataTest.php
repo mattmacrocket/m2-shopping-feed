@@ -23,11 +23,12 @@ use \Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerH
 use \Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableType;
 use \Magento\GroupedProduct\Model\Product\Type\Grouped as GroupedType;
 use \MageOS\ShoppingFeed\Model\Product\Mapper\Generic\Configurable\Availability;
+use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
 /**
  * Class MicrodataTest
  */
-class MicrodataTest extends \PHPUnit\Framework\TestCase
+class MicrodataTest extends CompatibilityTestCase
 {
     const MAPPED_PROD_SKU = 'SKU-729';
     const MAPPED_PROD_NAME = 'test Product';
@@ -225,11 +226,10 @@ class MicrodataTest extends \PHPUnit\Framework\TestCase
 
     protected function setupFeedMock()
     {
-        $this->feedMock = $this->getMockBuilder(
-            'MageOS\ShoppingFeed\Model\Feed'
-        )->disableOriginalConstructor()
-            ->setMethods(['load', 'getId', 'getConfig', 'getColumnsMap'])
-            ->getMock();
+        $this->feedMock = $this->createCompatibleMock(
+            'MageOS\ShoppingFeed\Model\Feed',
+            ['load', 'getId', 'getConfig', 'getColumnsMap']
+        );
 
         $this->feedMock->expects($this->any())
             ->method('load')
@@ -254,11 +254,10 @@ class MicrodataTest extends \PHPUnit\Framework\TestCase
                 ['attribute' => 'directive_availability', 'column' => 'availability', 'param' => ''],
             ]));
 
-        $this->feedFactoryMock = $this->getMockBuilder(
-            'MageOS\ShoppingFeed\Model\FeedFactory'
-        )->disableOriginalConstructor()
-            ->setMethods(['create'])
-            ->getMock();
+        $this->feedFactoryMock = $this->createCompatibleMock(
+            'MageOS\ShoppingFeed\Model\FeedFactory',
+            ['create']
+        );
 
         $this->feedFactoryMock->expects($this->any())
             ->method('create')
@@ -267,11 +266,10 @@ class MicrodataTest extends \PHPUnit\Framework\TestCase
 
     protected function setupAdapterMock()
     {
-        $this->adapterMock = $this->getMockBuilder(
-            'MageOS\ShoppingFeed\Model\Product\Adapter\Type\Configurable'
-        )->disableOriginalConstructor()
-            ->setMethods(['beforeMap', 'getMapValue', 'getFeed'])
-            ->getMock();
+        $this->adapterMock = $this->createCompatibleMock(
+            'MageOS\ShoppingFeed\Model\Product\Adapter\Type\Configurable',
+            ['beforeMap', 'getMapValue', 'getFeed']
+        );
 
         $this->adapterMock->expects($this->any())
             ->method('beforeMap')

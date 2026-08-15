@@ -19,6 +19,7 @@
 namespace MageOS\ShoppingFeed\Test\Unit\Model;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Class FeedTest
@@ -180,8 +181,9 @@ class FeedTest extends ModelFramework
     /**
      * Test getMessages method
      *
-     * * @dataProvider getMessagesDataProvider
+     * @dataProvider getMessagesDataProvider
      */
+    #[DataProvider('getMessagesDataProvider')]
     public function testGetMessages($messages, $expected)
     {
         $this->feed->setData('messages', $messages);
@@ -192,7 +194,7 @@ class FeedTest extends ModelFramework
     /**
      * @return array
      */
-    public function getMessagesDataProvider()
+    public static function getMessagesDataProvider()
     {
         return [
             [

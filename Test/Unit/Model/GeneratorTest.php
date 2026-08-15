@@ -181,7 +181,9 @@ class GeneratorTest extends ModelFramework
     {
         $this->feedMock->expects($this->any())
             ->method('getConfig')
-            ->will($this->onConsecutiveCalls(['simple'], 'path'));
+            ->will($this->returnCallback(static function ($key, $default = '') {
+                return $key === 'filters_product_types' ? ['simple'] : $default;
+            }));
         $this->expectReturn($this->feedMock, 'getId', 1);
 
         $this->expectReturn($this->productFactoryMock, 'create', $this->productMock);
@@ -212,7 +214,9 @@ class GeneratorTest extends ModelFramework
 
         $this->feedMock->expects($this->any())
             ->method('getConfig')
-            ->will($this->onConsecutiveCalls(['simple'], 'path'));
+            ->will($this->returnCallback(static function ($key, $default = '') {
+                return $key === 'filters_product_types' ? ['simple'] : $default;
+            }));
         $this->expectReturn($this->feedMock, 'getId', 1);
         $this->expectReturn($this->feedMock, 'getData', [
             'cell_enclose' => '"',
@@ -253,7 +257,9 @@ class GeneratorTest extends ModelFramework
         ];
 
         $this->feedMock->expects($this->any())->method('getConfig')
-            ->will($this->onConsecutiveCalls(['simple'], 'path'));
+            ->will($this->returnCallback(static function ($key, $default = '') {
+                return $key === 'filters_product_types' ? ['simple'] : $default;
+            }));
 
         $this->expectReturn($this->feedMock, 'getId', 1);
         $this->expectReturn($this->productMock, 'toFlatArray', []);
@@ -296,7 +302,9 @@ class GeneratorTest extends ModelFramework
 
         $this->feedMock->expects($this->any())
             ->method('getConfig')
-            ->will($this->onConsecutiveCalls(['simple'], 'path'));
+            ->will($this->returnCallback(static function ($key, $default = '') {
+                return $key === 'filters_product_types' ? ['simple'] : $default;
+            }));
         $this->expectReturn($this->feedMock, 'getId', 1);
         $this->expectReturn($this->feedMock, 'getData', [
             'cell_enclose' => '"',
@@ -391,7 +399,7 @@ class GeneratorTest extends ModelFramework
     public function testRun()
     {
         $this->setTestRunMocks();
-        $this->expectAdvencedReturn($this->fileDriverMock, 'isExists', $this->onConsecutiveCalls());
+        $this->expectReturn($this->fileDriverMock, 'isExists', false);
         $this->expectReturn($this->feedMock, 'getId', 1);
         $this->expectReturn($this->feedMock, 'getUploadCollection', []);
         $this->expectReturn($this->batchMock, 'isEnabled', false);
@@ -445,7 +453,6 @@ class GeneratorTest extends ModelFramework
         $this->model->setData('feed_file', '/tmp/feed.txt');
 
         $method = new \ReflectionMethod($this->model, 'processUploads');
-        $method->setAccessible(true);
         $this->assertSame($this->model, $method->invoke($this->model));
     }
 

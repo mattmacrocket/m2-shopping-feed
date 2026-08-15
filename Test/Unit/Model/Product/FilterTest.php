@@ -20,8 +20,9 @@
 namespace MageOS\ShoppingFeed\Test\Unit\Model\Product;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
-class FilterTest extends \PHPUnit\Framework\TestCase
+class FilterTest extends CompatibilityTestCase
 {
     /**
      * @var \MageOS\ShoppingFeed\Model\Product\Filter
@@ -55,24 +56,15 @@ class FilterTest extends \PHPUnit\Framework\TestCase
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->cacheMock = $this->getMockBuilder(
-            'MageOS\ShoppingFeed\Model\Generator\Cache'
-        )->disableOriginalConstructor()
-            ->setMethods(['getCache'])
-            ->getMock();
+        $this->cacheMock = $this->createCompatibleMock(
+            'MageOS\ShoppingFeed\Model\Generator\Cache',
+            ['getCache']
+        );
 
-        $this->feedMock = $this->getMockBuilder(
-            'MageOS\ShoppingFeed\Model\Feed'
-        )->disableOriginalConstructor()
-            ->setMethods(['getId', 'getConfig'])
-            ->getMock();
-
-        /*$this->productMock = $this->getMockBuilder(
-            '\Magento\Catalog\Model\Product'
-        )->disableOriginalConstructor()
-            ->setMethods(['getId', 'getPrice', 'getMsrp', 'hasMsrp'])
-            ->getMock();
-        */
+        $this->feedMock = $this->createCompatibleMock(
+            'MageOS\ShoppingFeed\Model\Feed',
+            ['getId', 'getConfig']
+        );
 
         $this->model = $this->objectManagerHelper->getObject(
             'MageOS\ShoppingFeed\Model\Product\Filter',

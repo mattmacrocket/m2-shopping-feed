@@ -20,11 +20,12 @@
 namespace MageOS\ShoppingFeed\Test\Unit\Model\Product\Mapper;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
 /**
  * Class MapperFactoryTest
  */
-class MapperFactoryTest extends \PHPUnit\Framework\TestCase
+class MapperFactoryTest extends CompatibilityTestCase
 {
     /**
      * @var \MageOS\ShoppingFeed\Model\Product\Mapper\MapperFactory
@@ -45,10 +46,10 @@ class MapperFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->objectManagerMock = $this->getMockBuilder('Magento\Framework\ObjectManagerInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(['create', 'get', 'configure'])
-            ->getMock();
+        $this->objectManagerMock = $this->createCompatibleMock(
+            'Magento\Framework\ObjectManagerInterface',
+            ['create', 'get', 'configure']
+        );
 
         $this->model = $this->objectManagerHelper->getObject(
             'MageOS\ShoppingFeed\Model\Product\Mapper\MapperFactory',
@@ -63,10 +64,10 @@ class MapperFactoryTest extends \PHPUnit\Framework\TestCase
         /**
  * @var \MageOS\ShoppingFeed\Model\Product\Adapter\Type\Simple|\PHPUnit_Framework_MockObject_MockObject $adapter
 */
-        $adapter = $this->getMockBuilder('MageOS\ShoppingFeed\Model\Product\Adapter\Type\Simple')
-            ->disableOriginalConstructor()
-            ->setMethods(['getProduct', 'getTypeId'])
-            ->getMock();
+        $adapter = $this->createCompatibleMock(
+            'MageOS\ShoppingFeed\Model\Product\Adapter\Type\Simple',
+            ['getProduct', 'getTypeId']
+        );
         $adapter->expects($this->any())
             ->method('getProduct')
             ->will($this->returnSelf());

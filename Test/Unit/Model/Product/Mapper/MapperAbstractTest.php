@@ -20,11 +20,12 @@
 namespace MageOS\ShoppingFeed\Test\Unit\Model\Product\Mapper;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
 /**
  * Class MapperAbstractTest
  */
-class MapperAbstractTest extends \PHPUnit\Framework\TestCase
+class MapperAbstractTest extends CompatibilityTestCase
 {
     /**
      * @var \MageOS\ShoppingFeed\Model\Product\Mapper\MapperAbstract
@@ -48,18 +49,18 @@ class MapperAbstractTest extends \PHPUnit\Framework\TestCase
 
     public function testAdapter()
     {
-        $adapter = $this->getMockBuilder('MageOS\ShoppingFeed\Model\Product\Adapter\Type\Simple')
-            ->disableOriginalConstructor()
-            ->setMethods(['getTitle'])
-            ->getMock();
+        $adapter = $this->createCompatibleMock(
+            'MageOS\ShoppingFeed\Model\Product\Adapter\Type\Simple',
+            ['getTitle']
+        );
         $adapter->expects($this->any())
             ->method('getTitle')
             ->will($this->returnValue('adapter'));
 
-        $adapter2 = $this->getMockBuilder('MageOS\ShoppingFeed\Model\Product\Adapter\Type\Simple')
-            ->disableOriginalConstructor()
-            ->setMethods(['getTitle'])
-            ->getMock();
+        $adapter2 = $this->createCompatibleMock(
+            'MageOS\ShoppingFeed\Model\Product\Adapter\Type\Simple',
+            ['getTitle']
+        );
         $adapter2->expects($this->any())
             ->method('getTitle')
             ->will($this->returnValue('adapter2'));

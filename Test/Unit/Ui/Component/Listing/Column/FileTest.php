@@ -29,8 +29,9 @@ class FileTest extends ModelFramework
 
         // Create Mocks and SUT
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $contextMock = $this->getMockBuilder('Magento\Framework\View\Element\UiComponent\ContextInterface')
-            ->getMockForAbstractClass();
+        $contextMock = $this->getModelMock(
+            'Magento\Framework\View\Element\UiComponent\ContextInterface'
+        );
         $processor = $this->getMockBuilder('Magento\Framework\View\Element\UiComponent\Processor')
             ->disableOriginalConstructor()
             ->getMock();

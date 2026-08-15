@@ -84,7 +84,9 @@ class AvailabilityTest extends ModelFramework
         $this->expectAdvencedReturn(
             $this->feedMock,
             'getConfig',
-            $this->onConsecutiveCalls(0, 'custom_attribute')
+            $this->returnCallback(static function ($key) {
+                return $key === 'general_stock_attribute_code' ? 'custom_attribute' : 0;
+            })
         );
         $this->expectReturn($this->adapterMock, 'getFeed', $this->feedMock);
         $this->expectReturn($this->statusMock, 'getStockStatus', 0);
@@ -104,7 +106,9 @@ class AvailabilityTest extends ModelFramework
         $this->expectAdvencedReturn(
             $this->feedMock,
             'getConfig',
-            $this->onConsecutiveCalls(0, 'custom_attribute')
+            $this->returnCallback(static function ($key) {
+                return $key === 'general_stock_attribute_code' ? 'custom_attribute' : 0;
+            })
         );
         $this->expectReturn($this->adapterMock, 'getFeed', $this->feedMock);
         $this->expectReturn($this->statusMock, 'getStockStatus', 0);

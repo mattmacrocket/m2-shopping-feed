@@ -21,6 +21,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Model\Adapter\Type;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Class FeedTest
@@ -92,7 +93,7 @@ class SimpleTest extends ModelFramework
         $this->assertInstanceOf('\MageOS\ShoppingFeed\Model\Product\Adapter\Type\Simple', $this->model);
     }
 
-    public function getTestMapValues()
+    public static function getTestMapValues()
     {
         return [['Return value', 'Return value'], ['', '']];
     }
@@ -102,6 +103,7 @@ class SimpleTest extends ModelFramework
      *
      * @param $value
      */
+    #[DataProvider('getTestMapValues')]
     public function testMap($value, $expectedValue)
     {
         $this->expectReturn(
@@ -152,6 +154,7 @@ class SimpleTest extends ModelFramework
      *
      * @param $value
      */
+    #[DataProvider('getTestMapValues')]
     public function testMapRowFormat($value, $expectedValue)
     {
         $this->expectReturn(
@@ -450,6 +453,7 @@ return $default;
      * @param $algorithm
      * @param $expected
      */
+    #[DataProvider('getPricesProvider')]
     public function testGetPrices($quantity, $algorithm, $expected)
     {
         $configMock = $this->getModelMock('\Magento\Framework\DataObject', ['getAlgorithm']);
@@ -485,7 +489,7 @@ return $default;
         $this->assertEquals($expected, $prices);
     }
 
-    public function getPricesProvider()
+    public static function getPricesProvider()
     {
         return [
             [1, '', [
@@ -578,6 +582,7 @@ return $default;
     /**
      * @dataProvider getMapValueProvider
      */
+    #[DataProvider('getMapValueProvider')]
     public function testGetMapValueWithoutDirective($attributeData = [])
     {
         $this->expectAdvencedReturn($this->feedMock, 'getConfig', $this->returnArgument(1));
@@ -634,7 +639,7 @@ return $default;
         $this->assertEquals($attributeData['expected'], $value);
     }
 
-    public function getMapValueProvider()
+    public static function getMapValueProvider()
     {
         return [
             [['code' => 'attribute_code_boolean', 'source_model' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',

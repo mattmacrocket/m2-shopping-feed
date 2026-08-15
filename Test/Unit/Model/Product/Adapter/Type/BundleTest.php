@@ -22,6 +22,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Model\Product\Adapter\Type;
 use Magento\Framework\DataObject;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Class BundleTest
@@ -108,6 +109,7 @@ class BundleTest extends ModelFramework
      * @param $algorithm
      * @param $expected
      */
+    #[DataProvider('getPricesProvider')]
     public function testGetPrices($quantity, $algorithm, $expected)
     {
         $configMock = $this->getModelMock('\Magento\Framework\DataObject', ['getAlgorithm']);
@@ -157,7 +159,7 @@ class BundleTest extends ModelFramework
         $this->assertEquals($expected, $prices);
     }
 
-    public function getPricesProvider()
+    public static function getPricesProvider()
     {
         return [
             [1, '', [

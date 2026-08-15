@@ -52,6 +52,7 @@ All notable changes to this project will be documented here.
 - Guaranteed cron generation locks are released and closed after all PHP failures
 - Made the generation CLI return a failure exit code when queue processing fails
 - Made both CLI commands compatible with Symfony Console 7 return-type contracts
+- Made unit and integration tests compatible with PHPUnit 9 through 12
 - Made the shared Promotions cache hash-aware and atomically replaceable across concurrent feed processes
 - Removed PHP 8.2 dynamic-property deprecations from the legacy unit-test fixtures
 

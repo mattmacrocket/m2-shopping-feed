@@ -12,6 +12,7 @@ use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Filesystem\DriverPool;
 use MageOS\ShoppingFeed\Model\Feed\OutputPath;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class OutputPathTest extends TestCase
@@ -89,6 +90,7 @@ class OutputPathTest extends TestCase
     /**
      * @dataProvider unsafePathProvider
      */
+    #[DataProvider('unsafePathProvider')]
     public function testRejectsUnsafeOutputConfiguration(string $directory, string $filename): void
     {
         $this->expectException(LocalizedException::class);
@@ -96,7 +98,7 @@ class OutputPathTest extends TestCase
         $this->subject->resolveFeedFile($directory, $filename, 42);
     }
 
-    public function unsafePathProvider(): array
+    public static function unsafePathProvider(): array
     {
         return [
             'parent directory traversal' => ['../var', 'feed_%s.txt'],
