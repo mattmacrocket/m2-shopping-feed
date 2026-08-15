@@ -471,6 +471,7 @@ class GeneratorTest extends ModelFramework
     protected function setTestRunMocks()
     {
         $this->expectReturn($this->dateTimeMock, 'getTimestamp', 1000000);
+        $this->expectReturn($this->feedMock, 'getType', 'generic');
         $this->expectSelf(
             $this->productCollectionProviderMock,
             ['getCollection', 'setStoreId', 'addStoreFilter', 'getSelect']

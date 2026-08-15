@@ -50,8 +50,7 @@ class ExpirationDateTest extends ModelFramework
     {
         $this->model->addAdapter($this->adapterMock);
 
-        $dateMock = new \DateTime();
-        $dateMock->setTimestamp(1451649600);
+        $dateMock = new \DateTime('@1451649600');
 
         $this->expectReturn($this->dateTimeMock, 'date', $dateMock);
         $this->expectReturn($this->adapterMock, 'getTimezone', $this->dateTimeMock);

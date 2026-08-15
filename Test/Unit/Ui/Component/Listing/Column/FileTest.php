@@ -39,6 +39,8 @@ class FileTest extends ModelFramework
             ->disableOriginalConstructor()
             ->getMock();
         $feedFactoryMock = $this->getModelMock('MageOS\ShoppingFeed\Model\FeedFactory', ['create']);
+        $directoryList = $this->createMock('Magento\Framework\App\Filesystem\DirectoryList');
+        $directoryList->method('getRoot')->willReturn('/tmp');
 
         $feedMock->expects($this->once())
             ->method('setData')
@@ -60,6 +62,7 @@ class FileTest extends ModelFramework
             [
                 'context' => $contextMock,
                 'feedFactory' => $feedFactoryMock,
+                'directoryList' => $directoryList,
             ]
         );
 

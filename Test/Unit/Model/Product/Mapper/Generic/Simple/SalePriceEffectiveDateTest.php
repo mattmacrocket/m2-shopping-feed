@@ -51,8 +51,8 @@ class SalePriceEffectiveDateTest extends ModelFramework
     {
         $this->model->addAdapter($this->adapterMock);
 
-        $dateMock = new \DateTime(null, new \DateTimeZone('America/Chicago'));
-        $dateMock->setTimestamp(1451649600);
+        $dateMock = new \DateTime('@1451649600');
+        $dateMock->setTimezone(new \DateTimeZone('America/Chicago'));
 
         $this->expectReturn(
             $this->adapterMock,

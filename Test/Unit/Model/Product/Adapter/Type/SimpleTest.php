@@ -261,7 +261,6 @@ return $default;
         $this->expectReturn($this->productMock, 'getPrice', 20);
         $this->expectReturn($this->productMock, 'getSpecialPrice', 10);
         $this->expectReturn($this->productMock, 'hasSpecialPrice', true);
-        $this->expectReturn($this->productMock, 'calculatePrice', 5);
 
         $this->catalogProductPriceMock->expects($this->any())
             ->method('calculatePrice')
@@ -278,7 +277,7 @@ return $default;
         $this->expectReturn($this->productMock, 'getPrice', 20);
         $this->expectReturn($this->productMock, 'getSpecialPrice', 3);
         $this->expectReturn($this->productMock, 'hasSpecialPrice', true);
-        $this->expectReturn($this->productMock, 'calculatePrice', 5);
+        $this->expectReturn($this->catalogProductPriceMock, 'calculatePrice', 5);
 
         $this->assertEquals(true, $this->model->hasSpecialPrice());
     }
@@ -327,10 +326,9 @@ return $default;
         $this->expectReturn($this->productMock, 'getPrice', 20);
         $this->expectReturn($this->productMock, 'getSpecialPrice', 3);
         $this->expectReturn($this->productMock, 'hasSpecialPrice', true);
-        $this->expectReturn($this->productMock, 'calculatePrice', 5);
+        $this->expectReturn($this->catalogProductPriceMock, 'calculatePrice', 2);
 
-        $dateMock = new \DateTime(null);
-        $dateMock->setTimestamp(1451649600);
+        $dateMock = new \DateTime('@1451649600');
         $dateMock->setTime(1, 0);
 
         $this->expectReturn($this->catalogRuleMock, 'getData', $dateMock->format('Y-m-d'));
@@ -346,10 +344,9 @@ return $default;
         $this->expectReturn($this->productMock, 'getPrice', 20);
         $this->expectReturn($this->productMock, 'getSpecialPrice', 3);
         $this->expectReturn($this->productMock, 'hasSpecialPrice', true);
-        $this->expectReturn($this->productMock, 'calculatePrice', 5);
+        $this->expectReturn($this->catalogProductPriceMock, 'calculatePrice', 2);
 
-        $dateMock = new \DateTime(null);
-        $dateMock->setTimestamp(1451649600);
+        $dateMock = new \DateTime('@1451649600');
 
         $this->expectReturn($this->catalogRuleMock, 'getData', false);
         $this->expectReturn($this->dateTimeMock, 'date', $dateMock);
