@@ -55,6 +55,7 @@ All notable changes to this project will be documented here.
 - Made unit and integration tests compatible with PHPUnit 9 through 12
 - Made the shared Promotions cache hash-aware and atomically replaceable across concurrent feed processes
 - Removed PHP 8.2 dynamic-property deprecations from the legacy unit-test fixtures
+- Made catalog-rule sale dates use Magento's configured store timezone instead of the server timezone
 
 ### Migration
 

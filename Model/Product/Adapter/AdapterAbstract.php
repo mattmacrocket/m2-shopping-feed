@@ -654,15 +654,26 @@ class AdapterAbstract extends \Magento\Framework\DataObject
  * @var \Magento\CatalogRule\Model\Rule $rule
 */
         $rule = $catalogRuleCollection->getFirstItem();
+        $timezoneCode = $this->timezone->getConfigTimezone() ?: 'UTC';
+        $storeTimezone = new \DateTimeZone($timezoneCode);
+
         if ($rule->getData('latest_start_date')) {
-            $fromDate = \DateTime::createFromFormat('Y-m-d', $rule->getData('latest_start_date'));
+            $fromDate = \DateTime::createFromFormat(
+                '!Y-m-d',
+                $rule->getData('latest_start_date'),
+                $storeTimezone
+            );
             $fromDate->setTime(1, 0);
         } else {
             $fromDate = null;
         }
 
         if ($rule->getData('earliest_end_date')) {
-            $toDate = \DateTime::createFromFormat('Y-m-d', $rule->getData('earliest_end_date'));
+            $toDate = \DateTime::createFromFormat(
+                '!Y-m-d',
+                $rule->getData('earliest_end_date'),
+                $storeTimezone
+            );
             $toDate->setTime(1, 0);
         } else {
             $toDate = null;

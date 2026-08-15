@@ -492,7 +492,7 @@ class ModelFramework extends CompatibilityTestCase
 
         $this->dateTimeMock = $this->getModelMock(
             'Magento\Framework\Stdlib\DateTime\Timezone',
-            ['date', 'getTimestamp', 'formatDate', 'formatDateTime', 'timestamp']
+            ['date', 'getTimestamp', 'formatDate', 'formatDateTime', 'getConfigTimezone', 'timestamp']
         );
 
         $this->feedMock = $this->getModelMock(

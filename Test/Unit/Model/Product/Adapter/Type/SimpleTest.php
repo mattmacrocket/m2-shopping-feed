@@ -321,14 +321,17 @@ return $default;
 
     public function testGetSalePriceEffectiveDatesCatalogRules()
     {
+        $timezone = new \DateTimeZone('America/Chicago');
+
         $this->expectReturn($this->helperMock, 'hasMsrp', true);
         $this->expectReturn($this->feedMock, 'getConfig', true);
         $this->expectReturn($this->productMock, 'getPrice', 20);
         $this->expectReturn($this->productMock, 'getSpecialPrice', 3);
         $this->expectReturn($this->productMock, 'hasSpecialPrice', true);
         $this->expectReturn($this->catalogProductPriceMock, 'calculatePrice', 2);
+        $this->expectReturn($this->dateTimeMock, 'getConfigTimezone', $timezone->getName());
 
-        $dateMock = new \DateTime('@1451649600');
+        $dateMock = new \DateTime('2016-01-01', $timezone);
         $dateMock->setTime(1, 0);
 
         $this->expectReturn($this->catalogRuleMock, 'getData', $dateMock->format('Y-m-d'));
