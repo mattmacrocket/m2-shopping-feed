@@ -43,21 +43,21 @@ jobs:
       mageos_matrix: ${{ steps.mageos.outputs.matrix }}
     steps:
       - uses: actions/checkout@v6
-      - uses: graycoreio/github-actions-magento2/supported-version@v8.7.0
+      - uses: graycoreio/github-actions-magento2/supported-version@v8.9.0
         id: magento
         with:
           project: magento-open-source
           kind: currently-supported
-      - uses: graycoreio/github-actions-magento2/supported-version@v8.7.0
+      # The upstream matrix action does not yet list Mage-OS 3.4.0. Keep the
+      # production compatibility target explicit until upstream catches up.
+      - name: Load Mage-OS 3.4.0 matrix
         id: mageos
-        with:
-          project: mage-os
-          kind: currently-supported
+        run: echo "matrix=$(jq -c . .github/matrices/mageos-3.4.0.json)" >> "$GITHUB_OUTPUT"
 
   check-magento:
     name: Magento Open Source production checks
     needs: compute-platform-matrix
-    uses: graycoreio/github-actions-magento2/.github/workflows/check-extension.yaml@v8.7.0
+    uses: graycoreio/github-actions-magento2/.github/workflows/check-extension.yaml@v8.9.0
     with:
       magento_repository: https://mirror.mage-os.org/
       matrix: ${{ needs.compute-platform-matrix.outputs.magento_matrix }}
@@ -66,9 +66,9 @@ jobs:
       composer_auth: ${{ secrets.COMPOSER_AUTH }}
 
   check-mageos:
-    name: Mage-OS production checks
+    name: Mage-OS 3.4.0 production checks
     needs: compute-platform-matrix
-    uses: graycoreio/github-actions-magento2/.github/workflows/check-extension.yaml@v8.7.0
+    uses: graycoreio/github-actions-magento2/.github/workflows/check-extension.yaml@v8.9.0
     with:
       magento_repository: https://repo.mage-os.org/
       matrix: ${{ needs.compute-platform-matrix.outputs.mageos_matrix }}

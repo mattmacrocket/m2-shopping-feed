@@ -17,6 +17,7 @@ All notable changes to this project will be documented here.
 - Portable Magento test bootstrap and an expanded regression suite
 - Integration coverage for module dependency wiring and feed queue database contracts
 - CI installation, unit, integration, coding-standard, and dependency-injection compilation checks across supported Magento Open Source and Mage-OS releases
+- An explicit Mage-OS 3.4.0 compatibility matrix while the upstream matrix provider still reports an older Mage-OS release
 - Private vulnerability reporting policy
 - Explicit MSI source-code to Google store-code mapping for Local Inventory
 - Streaming gzip generation for FTP and SFTP uploads
@@ -53,6 +54,7 @@ All notable changes to this project will be documented here.
 - Made the generation CLI return a failure exit code when queue processing fails
 - Made both CLI commands compatible with Symfony Console 7 return-type contracts
 - Made unit and integration tests compatible with PHPUnit 9 through 12
+- Made Magento XML validation safe when the module is already installed in the validation checkout
 - Made the shared Promotions cache hash-aware and atomically replaceable across concurrent feed processes
 - Removed PHP 8.2 dynamic-property deprecations from the legacy unit-test fixtures
 - Made catalog-rule sale dates use Magento's configured store timezone instead of the server timezone
@@ -66,3 +68,4 @@ All notable changes to this project will be documented here.
 
 - Aligned Composer metadata, source notices, and the bundled license on OSL-3.0
 - Split Magento Open Source and Mage-OS CI matrices so each distribution installs from its official Composer repository
+- Updated the reusable Magento extension checks to `graycoreio/github-actions-magento2` 8.9.0

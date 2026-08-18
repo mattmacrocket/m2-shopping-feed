@@ -13,7 +13,14 @@ if ($magentoRoot === '' || !is_file($magentoRoot . '/app/autoload.php')) {
 }
 
 require $magentoRoot . '/app/autoload.php';
-require $moduleRoot . '/registration.php';
+
+$componentRegistrar = new Magento\Framework\Component\ComponentRegistrar();
+if ($componentRegistrar->getPath(
+    Magento\Framework\Component\ComponentRegistrar::MODULE,
+    'MageOS_ShoppingFeed'
+) === null) {
+    require $moduleRoot . '/registration.php';
+}
 
 $failures = [];
 $validated = 0;

@@ -24,6 +24,8 @@ This is a new module identity prepared for Mage-OS Lab. Existing Rocket Web inst
 - Magento cron when scheduled feed generation is enabled
 - Magento Multi-Source Inventory APIs for source-level Local Inventory feeds
 
+Mage-OS 3.4.0, based on Magento Open Source 2.4.9, is an explicit CI compatibility target. Its production checks install the package into a Mage-OS 3.4.0 project, then run the unit and integration suites, Magento coding standard, and dependency-injection compilation.
+
 ## Installation
 
 Once the package is available through a configured Composer repository:
@@ -79,7 +81,7 @@ Run the imported and modernized unit suite with the PHPUnit installation from th
 MAGENTO_ROOT=/path/to/magento /path/to/magento/vendor/bin/phpunit -c phpunit.xml.dist
 ```
 
-The unit-test bootstrap loads Magento's test framework and the module directly, so the module does not need to be installed in the validation checkout. CI also installs the package into currently supported Magento Open Source and Mage-OS releases, runs the unit and integration suites, checks the Magento coding standard, and compiles dependency injection.
+The unit-test bootstrap loads Magento's test framework and the module directly, so the module does not need to be installed in the validation checkout. CI also installs the package into currently supported Magento Open Source releases and explicitly into Mage-OS 3.4.0, runs the unit and integration suites, checks the Magento coding standard, and compiles dependency injection.
 
 ## Provenance and license
 
