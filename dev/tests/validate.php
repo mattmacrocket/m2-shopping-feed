@@ -76,7 +76,7 @@ $assert($feedSchemaValid, 'The consolidated feed configuration does not match it
 $feedXpath = new DOMXPath($feedConfig);
 $expectedFeeds = [
     'generic' => ['directives' => 24, 'columns' => 17],
-    'google_shopping' => ['directives' => 30, 'columns' => 21],
+    'google_shopping' => ['directives' => 32, 'columns' => 29],
     'google_local_inventory' => ['directives' => 11, 'columns' => 7],
 ];
 foreach ($expectedFeeds as $feedName => $expected) {
@@ -99,7 +99,7 @@ foreach ($expectedFeeds as $feedName => $expected) {
 
     $columnNames = [];
     foreach ($columns as $column) {
-        $columnNames[] = $column->attributes->getNamedItem('attribute')?->nodeValue;
+        $columnNames[] = $feedXpath->query('column', $column)->item(0)?->nodeValue;
     }
     $assert(count($columnNames) === count(array_unique($columnNames)), sprintf('%s has duplicate default columns', $feedName));
 }
@@ -108,6 +108,20 @@ $assert(
     $feedXpath->query('/config/feed[@name="google_shopping"]/directives/directive[@name="directive_promotions_id"]')->length === 1,
     'Google Promotions was not merged into Google Shopping'
 );
+$assert(
+    $feedXpath->query('/config/feed[@name="google_shopping"]/default_product_columns/column/column[text()="promotion_id"]')->length === 1,
+    'Google Shopping is missing the promotion_id column'
+);
+$assert(
+    $feedXpath->query('/config/feed[@name="google_shopping"]/default_product_columns/column/column[text()="promotions_id"]')->length === 0,
+    'Google Shopping still uses the invalid promotions_id column'
+);
+foreach (['item_group_title', 'variant_option', 'color', 'size', 'material', 'pattern', 'gender', 'age_group'] as $column) {
+    $assert(
+        $feedXpath->query(sprintf('/config/feed[@name="google_shopping"]/default_product_columns/column/column[text()="%s"]', $column))->length === 1,
+        sprintf('Google Shopping is missing the %s variant column', $column)
+    );
+}
 $assert(
     $feedXpath->query('/config/feed[@name="google_local_inventory"]//directive[@name="directive_inventory_source"]')->length === 1,
     'Google Local Inventory is missing its inventory-source directive'

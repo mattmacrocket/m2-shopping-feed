@@ -144,6 +144,53 @@ class FeedTest extends ModelFramework
         $this->assertEquals($excpected, $this->feed->getColumnsMap());
     }
 
+    public function testGoogleColumnsMapUpgradesExistingConfiguration(): void
+    {
+        $variantColumns = [
+            'item_group_title' => ['column' => 'item_group_title', 'attribute' => 'directive_item_group_title', 'order' => 21],
+            'variant_option' => ['column' => 'variant_option', 'attribute' => 'directive_variant_option', 'order' => 22],
+            'color' => ['column' => 'color', 'attribute' => 'directive_variant_attributes', 'order' => 23, 'param' => ['color']],
+            'size' => ['column' => 'size', 'attribute' => 'directive_variant_attributes', 'order' => 24, 'param' => ['size']],
+            'material' => ['column' => 'material', 'attribute' => 'directive_variant_attributes', 'order' => 25, 'param' => ['material']],
+            'pattern' => ['column' => 'pattern', 'attribute' => 'directive_variant_attributes', 'order' => 26, 'param' => ['pattern']],
+            'gender' => ['column' => 'gender', 'attribute' => 'directive_variant_attributes', 'order' => 27, 'param' => ['gender']],
+            'age_group' => ['column' => 'age_group', 'attribute' => 'directive_variant_attributes', 'order' => 28, 'param' => ['age_group']],
+        ];
+        $defaultColumns = array_merge(
+            [
+                'id' => ['column' => 'id', 'attribute' => 'directive_id', 'order' => 10],
+                'item_group_id' => ['column' => 'item_group_id', 'attribute' => 'directive_item_group_id', 'order' => 20],
+            ],
+            $variantColumns
+        );
+        $this->feedTypesConfigMock->expects($this->once())
+            ->method('getFeed')
+            ->with('google_shopping')
+            ->willReturn(['default_feed_config' => ['columns' => ['product_columns' => $defaultColumns]]]);
+
+        $this->feed->setData('type', 'google_shopping');
+        $this->feed->setData(
+            'config',
+            new \Magento\Framework\DataObject(
+                [
+                    'columns_product_columns' => [
+                        ['column' => 'id', 'attribute' => 'directive_id', 'order' => 10],
+                        ['column' => 'item_group_id', 'attribute' => 'directive_item_group_id', 'order' => 20],
+                        ['column' => 'promotions_id', 'attribute' => 'directive_promotions_id', 'order' => 300],
+                    ],
+                ]
+            )
+        );
+
+        $columns = array_column($this->feed->getColumnsMap(), null, 'column');
+
+        $this->assertArrayNotHasKey('promotions_id', $columns);
+        $this->assertArrayHasKey('promotion_id', $columns);
+        foreach (array_keys($variantColumns) as $column) {
+            $this->assertArrayHasKey($column, $columns);
+        }
+    }
+
     /**
      * Test afterLoad method in connection to messages
      */

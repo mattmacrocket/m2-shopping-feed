@@ -68,6 +68,12 @@ class OptionTest extends ModelFramework
             ],[
                 'column' => 'item_group_id',
                 'attribute' => 'directive_item_group_id'
+            ],[
+                'column' => 'item_group_title',
+                'attribute' => 'directive_item_group_title'
+            ],[
+                'column' => 'variant_option',
+                'attribute' => 'directive_variant_option'
             ]]
         );
         $this->expectReturn($this->adapterMock, 'getProduct', $this->productMock);
@@ -91,9 +97,12 @@ class OptionTest extends ModelFramework
                 'id' => '1',
                 'sku' => 'original_sku',
                 'Column' => '',
+                'title' => 'Product title',
                 'price' => 2000,
                 'sale_price' => 1000,
-                'item_group_id' => 'item_group_id'
+                'item_group_id' => 'item_group_id',
+                'item_group_title' => '',
+                'variant_option' => '',
             ]
         ];
 
@@ -101,16 +110,22 @@ class OptionTest extends ModelFramework
             'id' => '1-option0',
             'sku' => 'sku-1',
             'Column' => 'title 1',
+            'title' => 'Product title',
             'price' => 2100,
             'sale_price' => 1100,
             'item_group_id' => 'product_sku',
+            'item_group_title' => 'Product title',
+            'variant_option' => 'Column:title 1',
         ],[
             'id' => '1-option1',
             'sku' => 'sku-2',
             'Column' => 'title 2',
+            'title' => 'Product title',
             'price' => 2200,
             'sale_price' => 1200,
-            'item_group_id' => 'product_sku'
+            'item_group_id' => 'product_sku',
+            'item_group_title' => 'Product title',
+            'variant_option' => 'Column:title 2',
         ]];
         $output = $this->model->execute($rows);
         $this->assertEquals($expected, $output);

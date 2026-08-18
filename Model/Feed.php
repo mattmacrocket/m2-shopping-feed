@@ -34,6 +34,17 @@ use MageOS\ShoppingFeed\Model\ResourceModel\Feed\ConfigFactory;
  */
 class Feed extends AbstractModel
 {
+    private const GOOGLE_VARIANT_COLUMNS = [
+        'item_group_title',
+        'variant_option',
+        'color',
+        'size',
+        'material',
+        'pattern',
+        'gender',
+        'age_group',
+    ];
+
     /**
      * Event prefix for observer
      *
@@ -224,11 +235,16 @@ class Feed extends AbstractModel
             return $this->columnsMap;
         }
 
+        $columns = $this->getConfig()->getData('columns_product_columns');
+        if ($this->getData('type') === 'google_shopping') {
+            $columns = $this->upgradeGoogleColumns($columns);
+        }
+
         $this->columnsMap = [];
         $order = [];
 
         $counter = 0;
-        foreach ($this->getConfig()->getData('columns_product_columns') as $arr) {
+        foreach ($columns as $arr) {
             $this->columnsMap[] = $arr;
             $order[sprintf('%s_%s', $arr['column'], $counter)] = $arr['order'];
             $counter++;
@@ -236,6 +252,32 @@ class Feed extends AbstractModel
         array_multisort($order, $this->columnsMap);
 
         return $this->columnsMap;
+    }
+
+    private function upgradeGoogleColumns(array $columns): array
+    {
+        $columnNames = [];
+        foreach ($columns as &$column) {
+            if ($column['column'] === 'promotions_id') {
+                $column['column'] = 'promotion_id';
+            }
+            $columnNames[$column['column']] = true;
+        }
+        unset($column);
+
+        if (!isset($columnNames['item_group_id'])) {
+            return $columns;
+        }
+
+        $feedConfig = $this->feedTypesConfig->getFeed('google_shopping');
+        $defaultColumns = $feedConfig['default_feed_config']['columns']['product_columns'];
+        foreach (self::GOOGLE_VARIANT_COLUMNS as $columnName) {
+            if (!isset($columnNames[$columnName], $defaultColumns[$columnName])) {
+                $columns[] = $defaultColumns[$columnName];
+            }
+        }
+
+        return $columns;
     }
 
     public function setColumnsMap($columnsMap = [])

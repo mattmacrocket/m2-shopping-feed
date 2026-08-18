@@ -149,8 +149,9 @@ class Option extends ProcessorAbstract
                 $this->updateItemId($value);
                 $this->updateItemLink([$value->getOptionId()  => $value->getId()]);
 
-                $fill[$column] = $value->getId();
+                $fill[$column] = $this->_item[$column];
                 if (!count($options) && count($fill) == $depth) {
+                    $this->updateVariantDetails($fill);
                     $this->_items[] = $this->_item;
                     // We reset the link value otherwise it sticks thru whole row
                     if (!is_null($originalLink)) {
@@ -164,6 +165,31 @@ class Option extends ProcessorAbstract
 
             $fill = [];
         }
+    }
+
+    private function updateVariantDetails(array $values): void
+    {
+        if (array_key_exists('item_group_title', $this->_item) && isset($this->_row['title'])) {
+            $this->_item['item_group_title'] = $this->_row['title'];
+        }
+        if (!array_key_exists('variant_option', $this->_item)) {
+            return;
+        }
+
+        $options = [];
+        foreach ($values as $name => $value) {
+            $options[] = $this->quoteVariantPart($name) . ':' . $this->quoteVariantPart($value);
+        }
+        $this->_item['variant_option'] = implode(',', $options);
+    }
+
+    private function quoteVariantPart(string $value): string
+    {
+        if (strpbrk($value, ':,"') === false) {
+            return $value;
+        }
+
+        return '"' . str_replace('"', '""', $value) . '"';
     }
 
     /**

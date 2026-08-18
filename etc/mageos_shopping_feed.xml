@@ -615,7 +615,19 @@
         <param><![CDATA[sku]]></param>
         <mappers>
           <mapper type="MageOS\ShoppingFeed\Model\Product\Mapper\Google\Simple\ItemGroupId"/>
-          <mapper for="configurable_child grouped_child" type="MageOS\ShoppingFeed\Model\Product\Mapper\Google\Configurable\Associated\ItemGroupId"/>
+          <mapper for="configurable_child" type="MageOS\ShoppingFeed\Model\Product\Mapper\Google\Configurable\Associated\ItemGroupId"/>
+        </mappers>
+      </directive>
+      <directive name="directive_item_group_title">
+        <label>Item Group Title</label>
+        <mappers>
+          <mapper type="MageOS\ShoppingFeed\Model\Product\Mapper\Google\Simple\ItemGroupTitle"/>
+        </mappers>
+      </directive>
+      <directive name="directive_variant_option">
+        <label>Variant Option</label>
+        <mappers>
+          <mapper type="MageOS\ShoppingFeed\Model\Product\Mapper\Google\Simple\VariantOption"/>
         </mappers>
       </directive>
       <directive name="directive_product_type_magento_category" allow_output_limit="true">
@@ -646,12 +658,12 @@
         <param><![CDATA[Please configure the <a href="#" data-tab-id="#feed_tabs_categories">Categories Map</a>]]></param>
       </directive>
       <directive name="directive_promotions_id">
-        <label>Promotions ID</label>
+        <label>Promotion ID</label>
         <renderer type="MageOS\ShoppingFeed\Block\Adminhtml\Feed\Edit\Form\Options\Renderer\HelpMessage"/>
         <mappers>
           <mapper type="MageOS\ShoppingFeed\Model\Product\Mapper\Google\Simple\PromotionsId"/>
         </mappers>
-        <param>Based on shopping cart promotions information, this directive returns echivalent promotion ids used in promotions feed. Make sure to configure the Google Promotions tab first..</param>
+        <param>Returns promotion IDs from the Google Promotions configuration.</param>
       </directive>
     </directives>
     <default_product_columns>
@@ -664,6 +676,44 @@
         <column>item_group_id</column>
         <order>20</order>
         <param>0</param>
+      </column>
+      <column attribute="directive_item_group_title">
+        <column>item_group_title</column>
+        <order>21</order>
+      </column>
+      <column attribute="directive_variant_option">
+        <column>variant_option</column>
+        <order>22</order>
+      </column>
+      <column attribute="directive_variant_attributes">
+        <column>color</column>
+        <order>23</order>
+        <param><![CDATA[["color"]]]></param>
+      </column>
+      <column attribute="directive_variant_attributes">
+        <column>size</column>
+        <order>24</order>
+        <param><![CDATA[["size"]]]></param>
+      </column>
+      <column attribute="directive_variant_attributes">
+        <column>material</column>
+        <order>25</order>
+        <param><![CDATA[["material"]]]></param>
+      </column>
+      <column attribute="directive_variant_attributes">
+        <column>pattern</column>
+        <order>26</order>
+        <param><![CDATA[["pattern"]]]></param>
+      </column>
+      <column attribute="directive_variant_attributes">
+        <column>gender</column>
+        <order>27</order>
+        <param><![CDATA[["gender"]]]></param>
+      </column>
+      <column attribute="directive_variant_attributes">
+        <column>age_group</column>
+        <order>28</order>
+        <param><![CDATA[["age_group"]]]></param>
       </column>
       <column attribute="name">
         <column>title</column>
@@ -745,8 +795,8 @@
         <column>shipping</column>
         <order>200</order>
       </column>
-            <column attribute="directive_promotions_id">
-        <column>promotions_id</column>
+      <column attribute="directive_promotions_id">
+        <column>promotion_id</column>
         <order>300</order>
       </column>
     </default_product_columns>

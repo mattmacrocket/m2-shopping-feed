@@ -474,6 +474,22 @@ class Generator extends DataObject
      */
     protected function writeFeed($fields, $addNewLine = true)
     {
+        $isGoogleFeed = in_array(
+            $this->feed->getData('type'),
+            ['google_shopping', 'google_local_inventory'],
+            true
+        );
+        if ($isGoogleFeed
+            && !empty($fields['sale_price'])
+            && isset($fields['price'])
+            && (float)$fields['sale_price'] >= (float)$fields['price']
+        ) {
+            $fields['sale_price'] = '';
+            if (isset($fields['sale_price_effective_date'])) {
+                $fields['sale_price_effective_date'] = '';
+            }
+        }
+
         $params = $this->getWriteFeedParams();
         /**
          * @var $defaultValue
@@ -509,6 +525,11 @@ class Generator extends DataObject
         }
 
         if (!$this->isTestMode()) {
+            if ($isGoogleFeed) {
+                while ($row && end($row) === '') {
+                    array_pop($row);
+                }
+            }
             $this->fileDriver->fileWrite($this->getTemporaryHandle(), ($addNewLine ? PHP_EOL : '') . implode($delimiter, $row));
         } else {
             $this->testOutput[] = $row;

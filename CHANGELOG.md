@@ -63,6 +63,10 @@ All notable changes to this project will be documented here.
 - Preserved associated-product inventory context while generating source-specific Local Inventory rows
 - Removed Local Inventory's production test-mode workaround and skipped duplicate rechecks only during source remapping
 - Removed PHPUnit 12 mock notices from the unit suite
+- Corrected the Google Shopping promotion header from `promotions_id` to `promotion_id`
+- Added current Google item-group titles, variant options, and standard variant attributes to Shopping feeds
+- Removed trailing empty fields from Google tab-delimited rows
+- Omitted Google sale prices and effective dates when the rendered sale price is not lower than the regular price
 
 ### Migration
 

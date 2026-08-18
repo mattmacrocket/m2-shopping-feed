@@ -187,11 +187,15 @@ Acceptance: the file parses without row-shape errors and every sampled value mat
 - [ ] Generate the Google Shopping feed with its default columns.
 - [ ] Validate `id`, `title`, `description`, `link`, `image_link`, `availability`, `price`, `condition`, `brand`, `gtin`, `mpn`, `google_product_category`, and `product_type` for representative SKUs.
 - [ ] Confirm configurable children use stable IDs, correct item group IDs, correct deep links, and the configured inheritance rules.
+- [ ] Confirm every row with `item_group_id` also has `item_group_title`, `variant_option`, and each applicable standard variant attribute.
+- [ ] For apparel variants, confirm `color`, `size`, `gender`, and `age_group` match the selected child product.
 - [ ] Confirm sale price and sale price effective dates match Magento dates in the store timezone.
+- [ ] Confirm equal or greater sale prices produce empty `sale_price` and `sale_price_effective_date` values.
 - [ ] Confirm taxonomy autocomplete and saved category mappings work after reload.
 - [ ] Confirm shipping values and weight units match Merchant Center expectations.
-- [ ] Confirm promotion IDs appear only for products and rules that qualify.
+- [ ] Confirm the product header is `promotion_id`, never `promotions_id`, and IDs appear only for products and rules that qualify.
 - [ ] Parse the full file with the intended delimiter and encoding. Confirm each row has the expected column count.
+- [ ] Confirm no product line ends with a tab delimiter.
 - [ ] Upload to a non-serving Merchant Center data source.
 - [ ] Record item count, parse results, warnings, and disapprovals after processing completes.
 - [ ] Investigate every account-level or item-level error. Classify warnings as accepted, store-data issues, or release blockers.

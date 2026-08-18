@@ -74,6 +74,66 @@ class GeneratorTest extends ModelFramework
         );
     }
 
+    public function testWriteFeedRemovesTrailingEmptyFields(): void
+    {
+        $this->expectReturn($this->feedMock, 'getData', 'google_shopping');
+        $this->feedMock->expects($this->any())
+            ->method('getConfig')
+            ->willReturnCallback(static function ($key, $default = '') {
+                return $key === 'output_params_delimiter' ? '\\t' : $default;
+            });
+        $this->feedMock->expects($this->once())
+            ->method('getColumnsMap')
+            ->willReturn([
+                ['column' => 'id'],
+                ['column' => 'promotion_id'],
+            ]);
+        $this->fileDriverMock->expects($this->once())
+            ->method('fileWrite')
+            ->with('handle', PHP_EOL . '1');
+
+        $this->createModel();
+        $this->model->setData('temporary_handle', 'handle');
+
+        $method = new \ReflectionMethod($this->model, 'writeFeed');
+        $method->invoke($this->model, ['id' => '1']);
+    }
+
+    public function testWriteFeedOmitsSalePriceWhenItIsNotLowerThanPrice(): void
+    {
+        $this->expectReturn($this->feedMock, 'getData', 'google_shopping');
+        $this->feedMock->expects($this->any())
+            ->method('getConfig')
+            ->willReturnCallback(static function ($key, $default = '') {
+                return $key === 'output_params_delimiter' ? '\\t' : $default;
+            });
+        $this->feedMock->expects($this->once())
+            ->method('getColumnsMap')
+            ->willReturn([
+                ['column' => 'price'],
+                ['column' => 'sale_price'],
+                ['column' => 'sale_price_effective_date'],
+                ['column' => 'id'],
+            ]);
+        $this->fileDriverMock->expects($this->once())
+            ->method('fileWrite')
+            ->with('handle', PHP_EOL . "10.00 EUR\t\t\t72");
+
+        $this->createModel();
+        $this->model->setData('temporary_handle', 'handle');
+
+        $method = new \ReflectionMethod($this->model, 'writeFeed');
+        $method->invoke(
+            $this->model,
+            [
+                'price' => '10.00 EUR',
+                'sale_price' => '10.00 EUR',
+                'sale_price_effective_date' => '2026-08-18T00:00:00+00:00/2027-08-18T00:00:00+00:00',
+                'id' => '72',
+            ]
+        );
+    }
+
     public function testGetTotalItems()
     {
         $this->expectReturn($this->dateTimeMock, 'timestamp', 1000000);
