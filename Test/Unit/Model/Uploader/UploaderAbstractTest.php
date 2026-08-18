@@ -5,6 +5,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Model\Uploader;
 use MageOS\ShoppingFeed\Model\Uploader\UploaderAbstract;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class UploaderAbstractTest extends TestCase
 {
     public function testReplacesFeedUploadWhenCachedUploaderIsReused(): void

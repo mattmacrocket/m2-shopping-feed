@@ -22,6 +22,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Model\Product;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class HelperTest extends CompatibilityTestCase
 {
     /**

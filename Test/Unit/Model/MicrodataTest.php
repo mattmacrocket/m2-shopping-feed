@@ -28,6 +28,7 @@ use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 /**
  * Class MicrodataTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class MicrodataTest extends CompatibilityTestCase
 {
     const MAPPED_PROD_SKU = 'SKU-729';

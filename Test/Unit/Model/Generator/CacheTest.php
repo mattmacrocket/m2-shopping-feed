@@ -25,6 +25,7 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 /**
  * Class CacheTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class CacheTest extends ModelFramework
 {
     /**

@@ -17,4 +17,4 @@ The imported unit suite was updated for the current Magento testing framework an
 
 Historical Rocket Web data patches were intentionally not imported. The new module creates fresh declarative-schema tables, so upgrades for serialized legacy rows are unnecessary. The legacy log migration also moves and deletes shared `pub/media/feeds/log_*.log` files, which would violate the coexistence boundary on a store running a paid package.
 
-Original Rocket Web notices remain in the imported source. This consolidation uses OSL-3.0 to match those source notices. The upstream Composer files instead declare GPL-3.0, and [LICENSING.md](LICENSING.md) records that historical metadata discrepancy. The package metadata, source notices, and bundled license in this repository are aligned on OSL-3.0.
+Original Rocket Web notices remain in the imported source. The package metadata, source notices, and bundled license in this repository are aligned on OSL-3.0. See [LICENSING.md](LICENSING.md).

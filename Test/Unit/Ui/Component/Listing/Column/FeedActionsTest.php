@@ -10,6 +10,7 @@ use Magento\Framework\View\Element\UiComponentFactory;
 use MageOS\ShoppingFeed\Ui\Component\Listing\Column\FeedActions;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class FeedActionsTest extends TestCase
 {
     public function testGenerateActionUsesMagentoPostActionTransport(): void

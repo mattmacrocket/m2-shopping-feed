@@ -261,7 +261,6 @@ class Feed extends AbstractModel
      */
     public function beforeSave()
     {
-        //TODO: if schedule is adjusted, set the processed_at date one day back so schedule can be picked up today.
         $messages = $this->getData('messages');
         if ($messages === null || $messages === false || $messages === '') {
             $messages = [];
@@ -402,7 +401,7 @@ class Feed extends AbstractModel
      *
      * @return void
      */
-    public function saveSchedules()
+    public function saveSchedules(): void
     {
         $schedules = $this->getData('schedules');
 
@@ -426,7 +425,17 @@ class Feed extends AbstractModel
                     continue;
                 }
 
-                $scheduleObject->setData('start_at', isset($schedule['start_at']) ? $schedule['start_at'] : 1);
+                $startAt = $schedule['start_at'] ?? 1;
+                if ($scheduleObject->getId()
+                    && (int)$scheduleObject->getData('start_at') !== (int)$startAt
+                ) {
+                    $scheduleObject->setData(
+                        'processed_at',
+                        $this->localeDate->date('-1 day')
+                            ->format(\Magento\Framework\DB\Adapter\Pdo\Mysql::DATETIME_FORMAT)
+                    );
+                }
+                $scheduleObject->setData('start_at', $startAt);
 
                 if (array_key_exists('batch_mode', $schedule)) {
                     $scheduleObject->setData('batch_mode', $schedule['batch_mode']);

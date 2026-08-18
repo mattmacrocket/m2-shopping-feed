@@ -15,6 +15,7 @@ use MageOS\ShoppingFeed\Model\Feed\OutputPath;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class OutputPathTest extends TestCase
 {
     private File $driver;

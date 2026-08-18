@@ -5,6 +5,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Model\Promotions\Provider;
 use MageOS\ShoppingFeed\Model\Promotions\Provider\Map;
 use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class MapTest extends CompatibilityTestCase
 {
     public function testUsesCurrentGooglePromotionEnumValues(): void

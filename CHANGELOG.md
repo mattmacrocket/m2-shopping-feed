@@ -22,6 +22,7 @@ All notable changes to this project will be documented here.
 - Explicit MSI source-code to Google store-code mapping for Local Inventory
 - Streaming gzip generation for FTP and SFTP uploads
 - Current Google Ads `view_item` events for selected configurable variants
+- Production acceptance plan covering store, feed, MSI, delivery, recovery, and release checks
 
 ### Fixed
 
@@ -58,6 +59,10 @@ All notable changes to this project will be documented here.
 - Made the shared Promotions cache hash-aware and atomically replaceable across concurrent feed processes
 - Removed PHP 8.2 dynamic-property deprecations from the legacy unit-test fixtures
 - Made catalog-rule sale dates use Magento's configured store timezone instead of the server timezone
+- Made edited schedules eligible to run again on the same store day
+- Preserved associated-product inventory context while generating source-specific Local Inventory rows
+- Removed Local Inventory's production test-mode workaround and skipped duplicate rechecks only during source remapping
+- Removed PHPUnit 12 mock notices from the unit suite
 
 ### Migration
 

@@ -22,6 +22,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHe
 use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class ConfigTest extends ModelFramework
 {
     /**

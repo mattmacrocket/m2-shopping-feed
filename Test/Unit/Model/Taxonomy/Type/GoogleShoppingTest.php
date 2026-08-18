@@ -12,6 +12,7 @@ use MageOS\ShoppingFeed\Model\Feed;
 use MageOS\ShoppingFeed\Model\Taxonomy\Type\GoogleShopping;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class GoogleShoppingTest extends TestCase
 {
     public function testTaxonomyUrlUsesHttps(): void

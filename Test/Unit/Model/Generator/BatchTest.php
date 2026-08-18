@@ -25,6 +25,7 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 /**
  * Class BatchTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class BatchTest extends ModelFramework
 {
     /**

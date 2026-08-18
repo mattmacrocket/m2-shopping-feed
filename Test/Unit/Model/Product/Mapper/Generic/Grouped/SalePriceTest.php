@@ -26,6 +26,7 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
  *
  * @package MageOS\ShoppingFeed\Test\Unit\Model\Product\Mapper\Generic\Grouped
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class SalePriceTest extends ModelFramework
 {
     /**

@@ -25,6 +25,7 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 /**
  * Class ConcatenateTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class ConcatenateTest extends ModelFramework
 {
     /**

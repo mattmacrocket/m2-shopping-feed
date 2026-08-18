@@ -28,7 +28,6 @@ class Quantity extends \MageOS\ShoppingFeed\Model\Product\Mapper\LocalInventory\
         $sourceItem = $this->getAdapter()->getData('inventory_source_item');
         $associatedProductAdapters = $this->getAdapter()->getData('associated_product_adapters');
 
-        // TODO: $associatedProductAdapters are missing here as they are removed in the LocalInventory processor
         foreach ($associatedProductAdapters as $associatedProductAdapter) {
             $count[] = $associatedProductAdapter->getInventoryCount($sourceItem ? $sourceItem->getSourceCode(): null);
         }

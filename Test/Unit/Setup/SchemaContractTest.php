@@ -9,6 +9,7 @@ use DOMElement;
 use DOMXPath;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class SchemaContractTest extends TestCase
 {
     private DOMXPath $xpath;

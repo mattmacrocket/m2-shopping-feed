@@ -25,6 +25,7 @@ use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 /**
  * Class MapperFactoryTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class MapperFactoryTest extends CompatibilityTestCase
 {
     /**

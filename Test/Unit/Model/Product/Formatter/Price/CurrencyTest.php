@@ -25,6 +25,7 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 /**
  * Class CurrencyTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class CurrencyTest extends ModelFramework
 {
     /**

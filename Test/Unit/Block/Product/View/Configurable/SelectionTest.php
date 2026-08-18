@@ -6,6 +6,7 @@ use MageOS\ShoppingFeed\Block\Product\View\Configurable\Selection;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class SelectionTest extends TestCase
 {
     /**

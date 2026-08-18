@@ -25,6 +25,7 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 /**
  * Class CollectionProviderTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class CollectionProviderTest extends ModelFramework
 {
     /**

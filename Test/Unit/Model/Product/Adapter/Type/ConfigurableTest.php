@@ -26,6 +26,7 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 /**
  * Class ConfigurableTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class ConfigurableTest extends ModelFramework
 {
     /**

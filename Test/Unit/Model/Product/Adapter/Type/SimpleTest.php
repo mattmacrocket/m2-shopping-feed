@@ -26,6 +26,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * Class FeedTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class SimpleTest extends ModelFramework
 {
     /**

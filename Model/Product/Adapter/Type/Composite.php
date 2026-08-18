@@ -147,8 +147,10 @@ class Composite extends AdapterAbstract
 
     /**
      * @inheritdoc
+     * @param bool $checkDuplicates
+     * @param bool $mapAssociatedProducts
      */
-    public function internalMap()
+    public function internalMap(bool $checkDuplicates = true, bool $mapAssociatedProducts = true): array
     {
         $associatedMode = $this->getAssociatedProductsMode();
         $rows = [];
@@ -181,8 +183,8 @@ class Composite extends AdapterAbstract
             $rows = [];
         }
 
-        if (in_array($associatedMode, $this->allowed_assoc)) {
-            $rows = array_merge($rows, $this->mapAssociatedProducts());
+        if ($mapAssociatedProducts && in_array($associatedMode, $this->allowed_assoc)) {
+            $rows = array_merge($rows, $this->mapAssociatedProducts($checkDuplicates));
         }
 
         return $rows;
@@ -209,9 +211,10 @@ class Composite extends AdapterAbstract
     /**
      * Get rows for associated products
      *
+     * @param bool $checkDuplicates
      * @return array
      */
-    public function mapAssociatedProducts()
+    public function mapAssociatedProducts(bool $checkDuplicates = true): array
     {
         $rows = [];
         $associatedProductAdapters = $this->getData('associated_product_adapters');
@@ -221,7 +224,9 @@ class Composite extends AdapterAbstract
  * @var \MageOS\ShoppingFeed\Model\Product\Adapter\AdapterAbstract $associatedProductAdapter
 */
         foreach ($associatedProductAdapters as $associatedProductAdapter) {
-            if ($associatedProductAdapter->isSkipped() || $associatedProductAdapter->isDuplicate()) {
+            if ($associatedProductAdapter->isSkipped()
+                || ($checkDuplicates && $associatedProductAdapter->isDuplicate())
+            ) {
                 continue;
             }
 

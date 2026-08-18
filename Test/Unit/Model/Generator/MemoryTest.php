@@ -25,6 +25,7 @@ require_once dirname(dirname(__FILE__)) . '/_files/global_mock_functions.php';
 /**
  * Class MemoryTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class MemoryTest extends ModelFramework
 {
     /**

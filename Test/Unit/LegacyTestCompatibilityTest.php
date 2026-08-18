@@ -9,6 +9,7 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class LegacyTestCompatibilityTest extends TestCase
 {
     public function testSharedLocaleDateMockIsDeclared(): void

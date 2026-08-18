@@ -15,6 +15,7 @@ use MageOS\ShoppingFeed\Model\Logger;
 use MageOS\ShoppingFeed\Model\ResourceModel\Generator\Queue\Collection;
 use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class ProcessTest extends CompatibilityTestCase
 {
     public function testUnexpectedThrowableMarksFeedAsErrorAndAlwaysReleasesLock(): void

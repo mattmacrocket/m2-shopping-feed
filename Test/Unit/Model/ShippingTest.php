@@ -24,6 +24,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHe
 /**
  * Class ShippingTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class ShippingTest extends \PHPUnit\Framework\TestCase
 {
     /**

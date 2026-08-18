@@ -21,6 +21,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Ui\Component\Listing\Column;
 use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 use MageOS\ShoppingFeed\Ui\Component\Listing\Column\Schedules;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class SchedulesTest extends ModelFramework
 {
     public function testPrepareItemsForFeedId()

@@ -26,6 +26,7 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 /**
  * Class AdapterFactoryTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class AdapterFactoryTest extends ModelFramework
 {
     /**

@@ -15,6 +15,7 @@ use MageOS\ShoppingFeed\Model\Logger\Handler\Console;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class GenerateCommandTest extends TestCase
 {
     public function testQueueGenerationReturnsFailureWhenProcessingFails(): void

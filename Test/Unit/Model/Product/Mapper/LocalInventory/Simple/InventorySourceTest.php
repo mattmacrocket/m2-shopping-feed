@@ -5,6 +5,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Model\Product\Mapper\LocalInventory\Simp
 use MageOS\ShoppingFeed\Model\Product\Mapper\LocalInventory\Simple\InventorySource;
 use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class InventorySourceTest extends ModelFramework
 {
     /**

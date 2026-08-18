@@ -17,6 +17,8 @@ The package has its own Composer name, PHP namespace, Magento module name, datab
 
 This is a new module identity prepared for Mage-OS Lab. Existing Rocket Web installations are not migrated automatically. Read [MIGRATION.md](MIGRATION.md) before evaluating it on a store that already uses a Rocket Web shopping feed module.
 
+Run [ACCEPTANCE-TEST-PLAN.md](ACCEPTANCE-TEST-PLAN.md) against the exact release candidate before enabling production schedules or uploads.
+
 ## Requirements
 
 - A currently supported Mage-OS or Magento Open Source release with `magento/framework` 103.0.6-p15 or later in the 103.x series
@@ -87,4 +89,4 @@ The unit-test bootstrap loads Magento's test framework and the module directly, 
 
 The consolidated source and exact import revisions are documented in [PROVENANCE.md](PROVENANCE.md). Original Rocket Web copyright and author notices are retained in source files.
 
-The package uses the [Open Software License 3.0](LICENSE.txt). Composer metadata, source notices, and the bundled license are aligned on OSL-3.0. The differing metadata found in the imported repositories is recorded in [LICENSING.md](LICENSING.md).
+The package uses the [Open Software License 3.0](LICENSE.txt). Composer metadata, source notices, and the bundled license are aligned on OSL-3.0. See [LICENSING.md](LICENSING.md).

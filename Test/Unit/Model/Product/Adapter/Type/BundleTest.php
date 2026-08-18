@@ -27,6 +27,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * Class BundleTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class BundleTest extends ModelFramework
 {
     /**

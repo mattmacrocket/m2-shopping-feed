@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageOS\ShoppingFeed\Test\Unit;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class CompatibilityTestCaseTest extends CompatibilityTestCase
 {
     public function testVirtualMagentoDataMethodCanBeMocked(): void

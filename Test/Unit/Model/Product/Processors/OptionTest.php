@@ -22,6 +22,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Model\Product\Processors;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class OptionTest extends ModelFramework
 {
     /**

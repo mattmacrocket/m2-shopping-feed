@@ -7,6 +7,7 @@ use MageOS\ShoppingFeed\Model\Promotions\Provider\Map;
 use MageOS\ShoppingFeed\Observer\Promotions\Generator;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class GeneratorTest extends TestCase
 {
     /**

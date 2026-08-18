@@ -63,7 +63,8 @@ class LocalInventory extends \MageOS\ShoppingFeed\Model\Product\Processors\Proce
      * @param array $rows
      * @return array
      */
-    public function execute(array $rows) {
+    public function execute(array $rows): array
+    {
         $items = [];
 
         if ($this->usesDefaultStock() && $this->isMsiEnabled()) {
@@ -81,41 +82,42 @@ class LocalInventory extends \MageOS\ShoppingFeed\Model\Product\Processors\Proce
                 $sourceCodes[] = $link->getSourceCode();
             }
 
-            // Do not process associated products as part of the parent, they are processed separately here.
             $associatedProductAdapters = $this->getAdapter()->getData('associated_product_adapters');
-            // TODO: find another wat to except assciates, some mappers would use associates to generate parent output
-            $this->getAdapter()->setData('associated_product_adapters', []);
-
 
             $complexMode = \MageOS\ShoppingFeed\Model\Feed\Source\Product\AssociatedMode::ONLY_PARENT;
             if (method_exists($this->getAdapter(), 'getAssociatedProductsMode')) {
                 $complexMode = $this->getAdapter()->getAssociatedProductsMode();
             }
-            // disable duplicates check so that rows are not removed.
-            // TODO: enhance duplicates check so that it does not have to be disabled here
-            $this->getAdapter()->setTestMode();
 
-            // Iterate inventory sources for current product
-            if (in_array($complexMode, $this->allowed_parent)) {
-                $sourceItems = $this->getSourceItems($this->getAdapter()->getProduct(), $sourceCodes);
-                // NOTE configurable products hold source item at 'default' source_code only. it may not be linked to website.
-                foreach ($sourceItems as $sourceItem) {
-                    $adapter = $this->getAdapter();
-                    $this->prepareAdapter($adapter, $sourceItem);
-                    $items = array_merge($items, $this->getAdapter()->internalMap());
-                }
-            }
-
-            // Iterate inventory sources for associated products
-            if ($associatedProductAdapters && in_array($complexMode, $this->allowed_assoc)) {
-                foreach ($associatedProductAdapters as $k => $associatedProductAdapter) {
-                    $sourceItems = $this->getSourceItems($associatedProductAdapter->getProduct(), $sourceCodes);
+            try {
+                // Iterate inventory sources for current product
+                if (in_array($complexMode, $this->allowed_parent)) {
+                    $sourceItems = $this->getSourceItems($this->getAdapter()->getProduct(), $sourceCodes);
+                    // NOTE configurable products hold source item at 'default' source_code only.
+                    // It may not be linked to the website.
                     foreach ($sourceItems as $sourceItem) {
-                        $this->prepareAdapter($associatedProductAdapter, $sourceItem);
-                        $this->getAdapter()->setData('associated_product_adapters', [$associatedProductAdapter]);
-                        $items = array_merge($items, $this->getAdapter()->mapAssociatedProducts());
+                        $adapter = $this->getAdapter();
+                        $this->prepareAdapter($adapter, $sourceItem);
+                        $items = array_merge($items, $this->getAdapter()->internalMap(false, false));
                     }
                 }
+
+                // Iterate inventory sources for associated products
+                if ($associatedProductAdapters && in_array($complexMode, $this->allowed_assoc)) {
+                    foreach ($associatedProductAdapters as $associatedProductAdapter) {
+                        $sourceItems = $this->getSourceItems($associatedProductAdapter->getProduct(), $sourceCodes);
+                        foreach ($sourceItems as $sourceItem) {
+                            $this->prepareAdapter($associatedProductAdapter, $sourceItem);
+                            $this->getAdapter()->setData(
+                                'associated_product_adapters',
+                                [$associatedProductAdapter]
+                            );
+                            $items = array_merge($items, $this->getAdapter()->mapAssociatedProducts(false));
+                        }
+                    }
+                }
+            } finally {
+                $this->getAdapter()->setData('associated_product_adapters', $associatedProductAdapters);
             }
         }
 
@@ -129,7 +131,8 @@ class LocalInventory extends \MageOS\ShoppingFeed\Model\Product\Processors\Proce
      * @param $sourceCodes
      * @return array
      */
-    protected function getSourceItems($product, $sourceCodes) {
+    protected function getSourceItems($product, $sourceCodes): array
+    {
         if (!$this->isMsiEnabled()) {
             return [];
         }
@@ -151,7 +154,8 @@ class LocalInventory extends \MageOS\ShoppingFeed\Model\Product\Processors\Proce
      * @param $adapter
      * @param $sourceItem
      */
-    protected function prepareAdapter($adapter, $sourceItem) {
+    protected function prepareAdapter($adapter, $sourceItem): void
+    {
 
         // Add cache key to column in the map for self::$directives
         $map = $adapter->getFeed()->getColumnsMap();
@@ -164,15 +168,13 @@ class LocalInventory extends \MageOS\ShoppingFeed\Model\Product\Processors\Proce
         // Update the map and set sourceItem context for adapter(s)
         $adapter->getFeed()->setColumnsMap($map);
         $adapter->setData('inventory_source_item', $sourceItem);
-        // disable duplicates check so that rows are not removed.
-        // TODO: enhance duplicates check so that it does not have to be disabled here
-        $adapter->setTestMode();
     }
 
     /**
      * @return bool
      */
-    protected function usesDefaultStock() {
+    protected function usesDefaultStock(): bool
+    {
         $useDefaultStock = $this->getAdapter()->getFeed()->getConfig('general_use_default_stock');
         $customStockAttribute = $this->getAdapter()->getFeed()->getConfig('general_stock_attribute_code');
         return $useDefaultStock || (!$useDefaultStock && empty($customStockAttribute));
@@ -181,8 +183,8 @@ class LocalInventory extends \MageOS\ShoppingFeed\Model\Product\Processors\Proce
     /**
      * @return bool
      */
-    protected function isMsiEnabled() {
+    protected function isMsiEnabled(): bool
+    {
         return $this->moduleManager->isEnabled('Magento_InventoryApi');
     }
-
 }

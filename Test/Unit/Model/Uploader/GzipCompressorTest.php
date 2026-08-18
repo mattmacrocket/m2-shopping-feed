@@ -6,6 +6,7 @@ use MageOS\ShoppingFeed\Model\Uploader\GzipCompressor;
 use Magento\Framework\Filesystem\Driver\File;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class GzipCompressorTest extends TestCase
 {
     /**

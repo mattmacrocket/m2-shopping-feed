@@ -24,6 +24,7 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 /**
  * Class ProductTypeMagentoCategory
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class ProductTypeMagentoCategoryTest extends ModelFramework
 {
     /**

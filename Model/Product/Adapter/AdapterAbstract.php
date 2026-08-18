@@ -922,12 +922,14 @@ class AdapterAbstract extends \Magento\Framework\DataObject
     /**
      * Forms product's data row. [column] => [value]
      *
+     * @param bool $checkDuplicates
+     * @param bool $mapAssociatedProducts Reserved for composite adapters
      * @return array
      */
-    public function internalMap()
+    public function internalMap(bool $checkDuplicates = true, bool $mapAssociatedProducts = true): array
     {
         $rows = [];
-        if ($this->isDuplicate()) {
+        if ($checkDuplicates && $this->isDuplicate()) {
             return $rows;
         }
 

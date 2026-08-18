@@ -20,6 +20,7 @@ use MageOS\ShoppingFeed\Model\ResourceModel\Generator\Queue\Collection as QueueC
 use MageOS\ShoppingFeed\Model\ResourceModel\Generator\Queue\CollectionFactory as QueueCollectionFactory;
 use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class ScheduleTest extends CompatibilityTestCase
 {
     public function testScheduledGenerationUsesQueueInvariantEntryPoint(): void

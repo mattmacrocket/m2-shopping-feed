@@ -25,6 +25,7 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
  * Class ImageLinkTest
  * @package MageOS\ShoppingFeed\Test\Unit\Model\Product\Mapper\Generic\Simple
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class ImageLinkTest extends ModelFramework
 {
     /**

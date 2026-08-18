@@ -25,6 +25,7 @@ use MageOS\ShoppingFeed\Test\Unit\CompatibilityTestCase;
 /**
  * Class LoggerTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class LoggerTest extends CompatibilityTestCase
 {
     /**

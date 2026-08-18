@@ -16,6 +16,7 @@ use MageOS\ShoppingFeed\Model\Promotions\Provider\Collection;
 use MageOS\ShoppingFeed\Model\Promotions\Provider\Map;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class ProviderTest extends TestCase
 {
     public function testPromotionCacheIsReloadedWhenConfigurationHashChanges(): void

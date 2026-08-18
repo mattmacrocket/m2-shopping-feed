@@ -23,6 +23,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Model\Feed\Source\Product;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class ColumnsTest extends ModelFramework
 {
     /** @var \MageOS\ShoppingFeed\Model\Feed\Source\Product\Columns */

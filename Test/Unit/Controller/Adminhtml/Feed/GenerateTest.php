@@ -18,6 +18,7 @@ use MageOS\ShoppingFeed\Model\Generator\QueueFactory;
 use MageOS\ShoppingFeed\Model\ResourceModel\Generator\Queue\Collection;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class GenerateTest extends TestCase
 {
     public function testManualGenerationUsesQueueInvariantEntryPoint(): void

@@ -24,6 +24,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * Class FeedTest
  */
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 class FeedTest extends ModelFramework
 {
     /**
@@ -386,6 +387,40 @@ class FeedTest extends ModelFramework
         $this->feed->saveSchedules();
 
         $this->assertInstanceOf('MageOS\ShoppingFeed\Model\Feed', $this->feed);
+    }
+
+    public function testChangedScheduleCanRunOnTheSameDay(): void
+    {
+        $this->scheduleMock->expects($this->any())
+            ->method('getId')
+            ->willReturn(1);
+        $this->scheduleMock->expects($this->any())
+            ->method('getData')
+            ->with('start_at')
+            ->willReturn(1);
+        $this->localeDateMock->expects($this->once())
+            ->method('date')
+            ->with('-1 day');
+        $this->scheduleMock->expects($this->once())->method('save');
+
+        $this->feed->setData('schedules', [['id' => 1, 'start_at' => 12]]);
+        $this->feed->saveSchedules();
+    }
+
+    public function testUnchangedScheduleKeepsItsProcessedDate(): void
+    {
+        $this->scheduleMock->setData('processed_at', '2026-08-18 09:00:00');
+        $this->scheduleMock->expects($this->any())
+            ->method('getId')
+            ->willReturn(1);
+        $this->scheduleMock->expects($this->any())
+            ->method('getData')
+            ->with('start_at')
+            ->willReturn(12);
+        $this->localeDateMock->expects($this->never())->method('date');
+
+        $this->feed->setData('schedules', [['id' => 1, 'start_at' => 12]]);
+        $this->feed->saveSchedules();
     }
 
     public function testDeleteSchedules()
