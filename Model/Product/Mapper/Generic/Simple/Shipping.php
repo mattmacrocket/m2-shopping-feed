@@ -68,7 +68,7 @@ class Shipping extends MapperAbstract
      */
     public function map(array $params = [])
     {
-        $allowedCountries = array_filter($this->getAdapter()->getFeed()->getConfig('shipping_country'));
+        $allowedCountries = array_filter($this->getAdapter()->getFeed()->getConfig('shipping_country') ?: []);
         if (!is_array($allowedCountries) || count($allowedCountries) == 0) {
             return '';
         }

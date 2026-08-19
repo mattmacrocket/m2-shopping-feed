@@ -68,6 +68,7 @@ All notable changes to this project will be documented here.
 - Kept Google rows aligned with their headers without trailing tabs
 - Preserved Google sale-price column names while writing feed headers
 - Omitted Google sale prices and effective dates when the rendered sale price is not lower than the regular price
+- Skipped shipping mapping when `shipping_country` is empty so PHP 8.4 no longer fatals on `array_filter(null)`
 
 ### Migration
 
