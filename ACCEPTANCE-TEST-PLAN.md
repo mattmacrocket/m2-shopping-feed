@@ -191,6 +191,7 @@ Acceptance: the file parses without row-shape errors and every sampled value mat
 - [ ] For apparel variants, confirm `color`, `size`, `gender`, and `age_group` match the selected child product.
 - [ ] Confirm sale price and sale price effective dates match Magento dates in the store timezone.
 - [ ] Confirm equal or greater sale prices produce empty `sale_price` and `sale_price_effective_date` values.
+- [ ] Confirm the header contains `sale_price` and `sale_price_effective_date` and has no empty column names.
 - [ ] Confirm taxonomy autocomplete and saved category mappings work after reload.
 - [ ] Confirm shipping values and weight units match Merchant Center expectations.
 - [ ] Confirm the product header is `promotion_id`, never `promotions_id`, and IDs appear only for products and rules that qualify.

@@ -479,7 +479,8 @@ class Generator extends DataObject
             ['google_shopping', 'google_local_inventory'],
             true
         );
-        if ($isGoogleFeed
+        if ($addNewLine
+            && $isGoogleFeed
             && !empty($fields['sale_price'])
             && isset($fields['price'])
             && (float)$fields['sale_price'] >= (float)$fields['price']
@@ -500,8 +501,7 @@ class Generator extends DataObject
         extract($params);
         $row = [];
 
-        // google error: "Too many column delimiters"
-        foreach ($this->feed->getColumnsMap() as $arr) {
+        foreach ($this->getOutputColumns($isGoogleFeed) as $arr) {
             $column = $arr['column'];
             $values = isset($fields[$column]) ? $fields[$column] : '';
             if (!is_array($values)) {
@@ -525,11 +525,6 @@ class Generator extends DataObject
         }
 
         if (!$this->isTestMode()) {
-            if ($isGoogleFeed) {
-                while ($row && end($row) === '') {
-                    array_pop($row);
-                }
-            }
             $this->fileDriver->fileWrite($this->getTemporaryHandle(), ($addNewLine ? PHP_EOL : '') . implode($delimiter, $row));
         } else {
             $this->testOutput[] = $row;
@@ -539,6 +534,24 @@ class Generator extends DataObject
         }
 
         return $this;
+    }
+
+    private function getOutputColumns(bool $isGoogleFeed): array
+    {
+        $columns = $this->feed->getColumnsMap();
+        if (!$isGoogleFeed) {
+            return $columns;
+        }
+
+        foreach ($columns as $key => $column) {
+            if ($column['column'] === 'id') {
+                unset($columns[$key]);
+                $columns[] = $column;
+                break;
+            }
+        }
+
+        return $columns;
     }
 
     /**

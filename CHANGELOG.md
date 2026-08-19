@@ -65,7 +65,8 @@ All notable changes to this project will be documented here.
 - Removed PHPUnit 12 mock notices from the unit suite
 - Corrected the Google Shopping promotion header from `promotions_id` to `promotion_id`
 - Added current Google item-group titles, variant options, and standard variant attributes to Shopping feeds
-- Removed trailing empty fields from Google tab-delimited rows
+- Kept Google rows aligned with their headers without trailing tabs
+- Preserved Google sale-price column names while writing feed headers
 - Omitted Google sale prices and effective dates when the rendered sale price is not lower than the regular price
 
 ### Migration

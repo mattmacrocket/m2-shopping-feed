@@ -74,7 +74,7 @@ class GeneratorTest extends ModelFramework
         );
     }
 
-    public function testWriteFeedRemovesTrailingEmptyFields(): void
+    public function testWriteFeedKeepsGoogleRowsAlignedWithoutTrailingTabs(): void
     {
         $this->expectReturn($this->feedMock, 'getData', 'google_shopping');
         $this->feedMock->expects($this->any())
@@ -90,13 +90,49 @@ class GeneratorTest extends ModelFramework
             ]);
         $this->fileDriverMock->expects($this->once())
             ->method('fileWrite')
-            ->with('handle', PHP_EOL . '1');
+            ->with('handle', PHP_EOL . "\t1");
 
         $this->createModel();
         $this->model->setData('temporary_handle', 'handle');
 
         $method = new \ReflectionMethod($this->model, 'writeFeed');
         $method->invoke($this->model, ['id' => '1']);
+    }
+
+    public function testWriteFeedPreservesGoogleColumnNames(): void
+    {
+        $this->expectReturn($this->feedMock, 'getData', 'google_shopping');
+        $this->feedMock->expects($this->any())
+            ->method('getConfig')
+            ->willReturnCallback(static function ($key, $default = '') {
+                return $key === 'output_params_delimiter' ? '\\t' : $default;
+            });
+        $this->feedMock->expects($this->once())
+            ->method('getColumnsMap')
+            ->willReturn([
+                ['column' => 'id'],
+                ['column' => 'price'],
+                ['column' => 'sale_price'],
+                ['column' => 'sale_price_effective_date'],
+            ]);
+        $this->fileDriverMock->expects($this->once())
+            ->method('fileWrite')
+            ->with('handle', "price\tsale_price\tsale_price_effective_date\tid");
+
+        $this->createModel();
+        $this->model->setData('temporary_handle', 'handle');
+
+        $method = new \ReflectionMethod($this->model, 'writeFeed');
+        $method->invoke(
+            $this->model,
+            [
+                'id' => 'id',
+                'price' => 'price',
+                'sale_price' => 'sale_price',
+                'sale_price_effective_date' => 'sale_price_effective_date',
+            ],
+            false
+        );
     }
 
     public function testWriteFeedOmitsSalePriceWhenItIsNotLowerThanPrice(): void
