@@ -67,6 +67,7 @@ All notable changes to this project will be documented here.
 - Added current Google item-group titles, variant options, and standard variant attributes to Shopping feeds
 - Removed trailing empty fields from Google tab-delimited rows
 - Omitted Google sale prices and effective dates when the rendered sale price is not lower than the regular price
+- Skipped shipping mapping when `shipping_country` is empty so PHP 8.4 no longer fatals on `array_filter(null)`
 
 ### Migration
 

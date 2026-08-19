@@ -21,6 +21,7 @@ namespace MageOS\ShoppingFeed\Test\Unit\Model\Product\Mapper\Generic\Simple;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Class ShippingTest
@@ -29,9 +30,14 @@ use MageOS\ShoppingFeed\Test\Unit\Model\ModelFramework;
 class ShippingTest extends ModelFramework
 {
     /**
-     * @var \MageOS\ShoppingFeed\Model\Product\Mapper\Generic\Simple\Id
+     * @var \MageOS\ShoppingFeed\Model\Product\Mapper\Generic\Simple\Shipping
      */
     protected $model;
+
+    /**
+     * @var array|string|null
+     */
+    protected $shippingCountryConfig = ['USA'];
 
     /**
      * @inheritdoc
@@ -50,7 +56,7 @@ class ShippingTest extends ModelFramework
             $this->returnCallback(function ($arg) {
                 switch ($arg) {
                     case 'shipping_country':
-                        return ['USA'];
+                        return $this->shippingCountryConfig;
                     default:
                         return '';
                 }
@@ -103,5 +109,29 @@ class ShippingTest extends ModelFramework
         $this->expectReturn($this->cacheMock, 'getCache', 'cache value');
 
         $this->assertEquals('cache value', $this->model->map());
+    }
+
+    /**
+     * Empty shipping_country must skip shipping instead of passing null to array_filter().
+     *
+     * @dataProvider emptyShippingCountryProvider
+     */
+    #[DataProvider('emptyShippingCountryProvider')]
+    public function testMapEmptyShippingCountry($shippingCountry)
+    {
+        $this->shippingCountryConfig = $shippingCountry;
+
+        $this->assertEquals('', $this->model->map());
+    }
+
+    /**
+     * @return array
+     */
+    public static function emptyShippingCountryProvider()
+    {
+        return [
+            'null' => [null],
+            'empty string' => [''],
+        ];
     }
 }
